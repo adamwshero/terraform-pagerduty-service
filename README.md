@@ -15,8 +15,10 @@ Anyone team needs to send CloudWatch alarms to PagerDuty and Slack.
 <br>
 
 ## Prerequisites
-* A PagerDuty escalation policy must already exist.
-* A PagerDuty on-call schedule *should* exist but is not required for this module to work.
+* You must create an API key in PagerDuty for Terraform/Terragrunt to consume.
+* You must add the PagerDuty provider to your providers list.
+* You must have already created a PagerDuty escalation policy and know its name.
+* You *should* create a PagerDuty on-call schedule but is not required for this module to work.
 * You will likely want to create the PagerDuty service by hand along with the slack extension so that you can import this resource into Terraform. This is going to be the easiest way to find all of the values for everything marked `##TODO##` in this repo.
 Import your PagerDuty service and Slack extension by:
 ```
