@@ -15,6 +15,27 @@ Anyone team needs to send CloudWatch alarms to PagerDuty and Slack.
 <br>
 <br>
 
+## Prerequisites
+* A PagerDuty escalation policy must already exist.
+* A PagerDuty on-call schedule *should* exist but is not required for this module to work.
+* You will likely want to create the PagerDuty service by hand along with the slack extension so that you can import this resource into Terraform. This is going to be the easiest way to find all of the values for everything marked `##TODO##` in this repo.
+Import your PagerDuty service and Slack extension by:
+```
+terraform import pagerduty_extension.main {extension_id}
+```
+<br>
+<br>
+
+## Referencing This Module
+
+```
+module "data" {
+  source = "git@github.com:your-github-space/your-repository.git//path/to/module"
+}
+```
+<br>
+<br>
+
 ## How to consume this module:
 Use any of the inputs available that you wish. Once you deploy this module, you will still need to create your ALARMS and send those events to the topic that gets created here. To be useful, you get the SNS topic name in the output of this module.
 
@@ -44,26 +65,6 @@ inputs = {
 }
 ```
 <br>
-<br>
-
-## Prerequisites
-* A PagerDuty escalation policy must already exist.
-* A PagerDuty on-call schedule *should* exist but is not required for this module to work.
-* You will likely want to create the PagerDuty service by hand along with the slack extension so that you can import this resource into Terraform. This is going to be the easiest way to find all of the values for everything marked `##TODO##` in this repo.
-Import your PagerDuty service and Slack extension by:
-```
-terraform import pagerduty_extension.main {extension_id}
-```
-<br>
-<br>
-
-## Referencing This Module
-
-```
-module "data" {
-  source = "git@github.com:your-github-space/your-repository.git//path/to/module"
-}
-```
 <br>
 
 ## Available Inputs
