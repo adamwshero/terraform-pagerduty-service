@@ -8,7 +8,6 @@ This module creates necessary services and integrations so DevOps can deploy Pag
 * Sets up a Slack extension to a given channel
 * Sets up a CloudWatch integration
 <br>
-<br>
 
 ## Who this module is for:
 Anyone team needs to send CloudWatch alarms to PagerDuty and Slack. 
