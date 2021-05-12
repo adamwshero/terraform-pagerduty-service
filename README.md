@@ -3,14 +3,14 @@
 
 # Module: PagerDuty
 
-### What this module does:
+## What this module does:
 This module creates necessary services and integrations so DevOps can deploy Pagerduty services and dependent resources to teams so that they can receive actionable alerts from AWS CloudWatch.
 * Creates a Pagerduty service
 * Creates an SNS topic
 * Subscribes the Pagerduty service to the SNS topic
 * Sets up a Slack extension to a given channel
 * Sets up a CloudWatch integration
-<br>
+<br><br>
 
 ## Who this module is for:
 Anyone team needs to send CloudWatch alarms to PagerDuty and Slack. 
