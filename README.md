@@ -49,7 +49,7 @@ module "data" {
 ## How to consume this module:
 Use any of the inputs available that you wish. Once you deploy this module, you will still need to create your ALARMS and send those events to the topic that gets created here. To be useful, you get the SNS topic name in the output of this module.
 
-Currently it is setup to accept the following inputs.
+Currently it is setup to accept the following inputs. (Terragrunt example)
 ```
 inputs = {
 ### PagerDuty Inputs
