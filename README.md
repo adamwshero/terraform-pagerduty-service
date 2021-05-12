@@ -17,6 +17,11 @@ Anyone team needs to send CloudWatch alarms to PagerDuty and Slack.
 <br>
 <br>
 
+## Terraform Compatibility
+This module was originally written in Terraform 0.12.9. After an upgrade to =>0.14.0, it was discovered that the PagerDuty provider module (and API key) could no longer be called from Terragrunt. As a result, the provider block was added to this module directly, in main.tf, and it references the API key in the calling Terragrunt code, wherever it may be.
+<br>
+<br>
+
 ## Prerequisites
 * You must create an API key in PagerDuty for Terraform/Terragrunt to consume.
 * You must add the PagerDuty provider to your providers list.
@@ -127,6 +132,7 @@ curl -i https://api.pagerduty.com/extension_schemas/PII3QUR -H "Accept: applicat
 * Create resource to handle runbook names and URL's.
 * Create resource to handle service dependencies.
 * Create CloudWatch metric alarm. (maybe)
+* <s>Make module compatible with Terraform =>0.14.0</s>
 
 <br>
 
