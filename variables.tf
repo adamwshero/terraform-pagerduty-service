@@ -1,3 +1,11 @@
+######################
+# PagerDuty API Token
+######################
+variable "token" {
+  type        = string
+  description = "Pagerduty token"
+}
+
 #####################
 # PagerDuty Service
 #####################
