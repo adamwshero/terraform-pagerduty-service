@@ -1,3 +1,4 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![https://www.terraform.io/](https://img.shields.io/badge/terraform-v0.14.x-blue.svg?style=flat)
 ![](https://img.shields.io/maintenance/yes/2021.svg)
 
