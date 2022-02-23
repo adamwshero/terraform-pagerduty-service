@@ -1,81 +1,130 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![https://www.terraform.io/](https://img.shields.io/badge/terraform-v0.14.x-blue.svg?style=flat)
-![](https://img.shields.io/maintenance/yes/2021.svg)
-
-# Module: PagerDuty
-
-## What this module does:
-This module creates necessary services and integrations so DevOps can deploy Pagerduty services and dependent resources to teams so that they can receive actionable alerts from AWS CloudWatch.
-* Creates a Pagerduty service
-* Creates an SNS topic
-* Subscribes the Pagerduty service to the SNS topic
-* Sets up a Slack extension to a given channel
-* Sets up a CloudWatch integration
-<br><br>
-
-## Who this module is for:
-Anyone team needs to send CloudWatch alarms to PagerDuty and Slack. 
+![Terraform](https://cloudarmy.io/tldr/images/tf_aws.jpg)
 <br>
 <br>
-
-## Terraform Compatibility
-This module was originally written in Terraform 0.12.9. After an upgrade to =>0.14.0, it was discovered that the PagerDuty provider module (and API key) could no longer be called from Terragrunt. As a result, the provider block was added to this module directly, in main.tf, and it references the API key in the calling Terragrunt code, wherever it may be.
 <br>
 <br>
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/adamwshero/terraform-pagerduty-service?color=lightgreen&label=latest%20tag%3A&style=for-the-badge)
+<br>
+<br>
+# terraform-pagerduty-service
 
-## Prerequisites
-* You must create an API key in PagerDuty for Terraform/Terragrunt to consume.
-* You must add the PagerDuty provider to your providers list.
-* You must have already created a PagerDuty escalation policy and know its name.
-* You *should* create a PagerDuty on-call schedule but is not required for this module to work.
-* You will likely want to create the PagerDuty service by hand along with the slack extension so that you can import this resource into Terraform. This is going to be the easiest way to find all of the values for everything marked `##TODO##` in this repo.
-Import your PagerDuty service and Slack extension by:
+Terraform module that creates:
+- Pagerduty Service
+- SNS Topic
+- Subscribes the Pagerduty service to the SNS topic
+- Creates a Slack extension to a specified Slack channel
+- Creates a CloudWatch integration
+
+[Pagerduty Service](https://support.pagerduty.com/docs/services-and-integrations) represents something you monitor (like a web service, email service, or database service). It is a container for related incidents that associates them with escalation policies.
+
+## Examples
+
+Look at our [Terraform example](latest/examples/terraform/) where you can get a better context of usage for both Terraform. The Terragrunt example can be viewed directly from GitHub.
+
+## Usage
+
+You can create a PagerDuty service that comes with its own SNS topic and a subcription to that topic. The module also creates the CloudWatch integration for you as well as a Slack extension for notifications to blast to your channel of choice.
+
+### Terraform Example
 ```
-terraform import pagerduty_extension.main {extension_id}
-```
-<br>
-<br>
+module "pagerduty-service" {
+    source = "git@github.com:adamwshero/terraform-pagerduty-service.git//?ref=1.0.0"
 
-## Referencing This Module
+    ### PagerDuty Inputs
+    name              = "DevOps: My-Critical-Service"    #Required Input
+    escalation_policy = "Escalation: DevOps Engineering" #Required Input
+    resolve_timeout   = 14400
+    ack_timeout       = 600
+    alert_creation    = "create_alerts_and_incidents"
+    alert_grouping    = "intelligent"
 
-```
-module "data" {
-  source = "git@github.com:your-github-space/your-repository.git//path/to/module"
+    ### AWS SNS Topic Inputs
+    service_name = "AcmeCorp-Elasticsearch" #Prefixed with "PagerDuty-DevOps-" in the module
+
+    ### Slack Extension Inputs
+    app_id             = "A1AAAAAAA"
+    authed_user        = "A11AAA11AAA"
+    bot_user_id        = "A111AAAA11A"
+    configuration_url  = "https://acme-corp.slack.com/services/A111AAAAAAAA"
+    notify_resolve     = true
+    notify_trigger     = true
+    notify_escalate    = true
+    notify_acknowledge = true
+    notify_assignments = true
+    notify_annotate    = true
+    high_urgency       = true
+    low_urgency        = true
+    referer            = "https://acmecorp.pagerduty.com/services/A1AAAA1/integrations?service_profile=1"
+    slack_team_id      = "AAAAAA11A"
+    slack_team_name    = "AcmeCorp"
+    slack_channel      = "#devops-pagerduty" #Required Input
+    slack_channel_id   = "A11AA1AAA1A"       #TODO# not sure if this can be a list
 }
 ```
-<br>
-<br>
 
-## How to consume this module:
-Use any of the inputs available that you wish. Once you deploy this module, you will still need to create your ALARMS and send those events to the topic that gets created here. To be useful, you get the SNS topic name in the output of this module.
-
-Currently it is setup to accept the following inputs. (Terragrunt example)
+### Terragrunt Example
 ```
+terraform {
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//?ref=1.0.0"
+}
+
 inputs = {
-### PagerDuty Inputs
-  name               = "DevOps: Service-SubService"
-  escalation_policy  = "Escalation: DevOps"
-  resolve_timeout    = 14400
-  ack_timeout        = 600
-  alert_creation     = "create_alerts_and_incidents"
-  alert_grouping     = "intelligent"
-### AWS SNS Topic Inputs
-  service_name            = "MyService" #Prefixed with "PagerDuty-DevOps-" in the module
-### Slack Extension Inputs
-  notify_resolve     = true
-  notify_trigger     = true
-  notify_escalate    = true
-  notify_acknowledge = true
-  notify_assignments = true
-  notify_annotate    = true
-  high_urgency       = true
-  low_urgency        = true
-  slack_channel      = "#my-slack-channel"
-  slack_channel_id   = "ABC123XYZ"
+  ### PagerDuty Inputs
+  name              = "DevOps: My-Critical-Service"    #Required Input
+  escalation_policy = "Escalation: DevOps Engineering" #Required Input
+  resolve_timeout   = 14400
+  ack_timeout       = 600
+  alert_creation    = "create_alerts_and_incidents"
+  alert_grouping    = "intelligent"
+  
+  ### AWS SNS Topic Inputs
+  service_name = "AcmeCorp-Elasticsearch" #Prefixed with "PagerDuty-DevOps-" in the module
+  
+  ### Slack Extension Inputs
+    app_id             = "A1AAAAAAA"
+    authed_user        = "A11AAA11AAA"
+    bot_user_id        = "A111AAAA11A"
+    configuration_url  = "https://acme-corp.slack.com/services/A111AAAAAAAA"
+    notify_resolve     = true
+    notify_trigger     = true
+    notify_escalate    = true
+    notify_acknowledge = true
+    notify_assignments = true
+    notify_annotate    = true
+    high_urgency       = true
+    low_urgency        = true
+    referer            = "https://acmecorp.pagerduty.com/services/A1AAAA1/integrations?service_profile=1"
+    slack_team_id      = "AAAAAA11A"
+    slack_team_name    = "AcmeCorp"
+    slack_channel      = "#devops-pagerduty" #Required Input
+    slack_channel_id   = "A11AA1AAA1A"       #TODO# not sure if this can be a list
 }
 ```
-<br>
-<br>
+
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 2.67.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14.0 
+| <a name="requirement_terragrunt"></a> [terragrunt](#requirement\_terragrunt) | >= 0.28.0 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 2.67.0 |
+| <a name="provider_pagerduty"></a> [pagerduty](#provider\_pagerduty) | >= 1.9.6 |
+
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [pagerduty_service.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/resources/service) | resource |
+| [pagerduty_extension.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/resources/extension) | resource |
+
 
 ## Available Inputs
 
@@ -135,12 +184,3 @@ curl -i https://api.pagerduty.com/extension_schemas/PII3QUR -H "Accept: applicat
 * Create CloudWatch metric alarm. (maybe)
 * <s>Make module compatible with Terraform =>0.14.0</s>
 
-<br>
-
-## Owner:
-It's you!
-<br>
-<br>
-
-## Helpful URL's
-https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/resources/extension

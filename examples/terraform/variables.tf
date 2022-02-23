@@ -1,3 +1,8 @@
+variable "env" {
+  type    = map(any)
+  default = {}
+}
+
 ######################
 # PagerDuty API Token
 ######################
@@ -9,6 +14,7 @@ variable "token" {
 #####################
 # PagerDuty Service
 #####################
+
 variable "escalation_policy" {
   type        = string
   default     = ""
