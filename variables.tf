@@ -62,7 +62,7 @@ variable "type" {
 
 variable "prefix" {
   type        = string
-  default     = "PagerDuty-DevOps"
+  default     = ""
   description = "Default prefix for all PagerDuty subscribed SNS topics"
 }
 
@@ -77,18 +77,18 @@ variable "service_name" {
 #############################
 variable "app_id" {
   type        = string
-  default     = "A1AAAAAAA"
-  description = "Id of the Slack app."
+  default     = ""
+  description = "Id of the Slack app. (e.g. A1KKEUENN)"
 }
 variable "authed_user" {
   type        = string
-  default     = "A11AAA11AAA"
-  description = "Id of the auth user."
+  default     = ""
+  description = "Id of the auth user. (e.g. A11OKE11NNY)"
 }
 variable "bot_user_id" {
   type        = string
-  default     = "A111AAAA11A"
-  description = "Id of the bot user."
+  default     = ""
+  description = "Id of the bot user. (e.g. A11OKE11NNY)"
 }
 variable "slack_channel" {
   type        = string
@@ -102,13 +102,13 @@ variable "slack_channel_id" {
 }
 variable "configuration_url" {
   type        = string
-  default     = "https://acme-corp.slack.com/services/A111AAAAAAAA"
-  description = "TODO"
+  default     = ""
+  description = "The URL of your slack space. (e.g. https://acme-corp.slack.com/services/A111AAAAAAAA)"
 }
 variable "url" {
   type        = string
-  default     = "https://hooks.slack.com/services/A1AAAA11A/A11AAAAAAAA/AaAAaAaAAaaAaAAaaAAAA1AA"
-  description = "Used to establish a webhook."
+  default     = ""
+  description = "The url that the webhook payload will be sent to for this Extension. (e.g. https://hooks.slack.com/services/A1AAAA11A/A11AAAAAAAA/AaAAaAaAAaaAaAAaaAAAA1AA)"
 }
 variable "notify_resolve" {
   type        = bool
@@ -141,18 +141,19 @@ variable "notify_annotate" {
   description = "Tells PagerDuty to notify Slack when an incident has been updated."
 }
 variable "referer" {
-  type    = string
-  default = "https://acmecorp.pagerduty.com/services/A1AAAA1/integrations?service_profile=1"
+  type        = string
+  default     = ""
+  description = "URL of the PagerDuty Slack integration. (e.g. https://acmecorp.pagerduty.com/services/A1AAAA1/integrations?service_profile=1)"
 }
 variable "slack_team_id" {
   type        = string
-  default     = "AAAAAA11A"
+  default     = ""
   description = "The Slack team Id (e.g. AB456XYZ)."
 }
 variable "slack_team_name" {
   type        = string
-  default     = "AcmeCorp"
-  description = "The Slack team name (e.g. MYCOMPANY)."
+  default     = ""
+  description = "The Slack team name (e.g. ACMECORP)."
 }
 variable "high_urgency" {
   type        = bool
