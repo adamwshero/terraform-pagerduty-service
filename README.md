@@ -170,17 +170,14 @@ inputs = {
 <br>
 
 ## PagerDuty/Slack Extension Schema
-https://api.pagerduty.com/extension_schemas/PII3QUR (See /slack_schema.json)
-
-Get current Slack extension schema anytime via curl command
-```
-curl -i https://api.pagerduty.com/extension_schemas/PII3QUR -H "Accept: application/vnd.pagerduty+json;version=2" -H "Content-Type: application/json" -H "Authorization: Token token=y_NbAkKc66ryYTWUXYEu"
-```
-<br>
+https://developer.pagerduty.com/api-reference/YXBpOjExMjA5NTQ0-pager-duty-slack-integration-api (See /slack_schema.json)
 
 ## To-Do:
 * Create resource to handle runbook names and URL's.
 * Create resource to handle service dependencies.
 * Create CloudWatch metric alarm. (maybe)
 * <s>Make module compatible with Terraform =>0.14.0</s>
+
+## Known Issues
+- PagerDuty is currently aware that the Slack extension must be manually authorized to connect to a given Slack channel once the service is created. There is no ETA on this fix.
 
