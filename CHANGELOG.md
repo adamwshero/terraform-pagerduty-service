@@ -1,3 +1,8 @@
+## pagerduty-v1.0.3 (February 24, 2022)
+
+CHORE:
+* Corrected typo for pd_subscription
+
 ## pagerduty-v1.0.2 (February 24, 2022)
 
 CHORE:
