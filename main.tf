@@ -55,7 +55,7 @@ resource "aws_sns_topic" "this" {
 ##  SNS/PagerDuty Topic Subscription
 ######################################
 
-resource "aws_sns_topic_subscription" "pd-topic-subscription" {
+resource "aws_sns_topic_subscription" "this" {
   topic_arn              = aws_sns_topic.this.arn
   protocol               = "https"
   endpoint_auto_confirms = true #required or the subscription won't auto-confirm
