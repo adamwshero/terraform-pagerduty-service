@@ -1,3 +1,8 @@
+## pagerduty-v1.0.2 (February 24, 2022)
+
+CHORE:
+* Set resource attributes to best practices
+
 ## pagerduty-v1.0.1 (February 24, 2022)
 
 * Updated README
