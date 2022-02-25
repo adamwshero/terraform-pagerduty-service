@@ -1,6 +1,8 @@
 output "PagerDuty_Service_Name" {
-  value = pagerduty_service.this.name
+  description = "The name of the PagerDuty service."
+  value       = pagerduty_service.this.name
 }
 output "AWS_SNS_Topic" {
-  value = aws_sns_topic.this.name
+  description = "The name of the SNS topic that you can send CloudWatch alarms to."
+  value       = aws_sns_topic.this.name
 }

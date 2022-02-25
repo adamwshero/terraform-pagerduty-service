@@ -1,3 +1,7 @@
+## pagerduty-v1.0.4 (February 24, 2022)
+
+CHORE:
+* Added descriptions to outputs.
 ## pagerduty-v1.0.3 (February 24, 2022)
 
 CHORE:
