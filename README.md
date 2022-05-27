@@ -148,45 +148,47 @@ inputs = {
 
 ## Available Inputs
 
-| Name                  | Resource            | Variable             | Data Type | Default | Required? |
-| --------------------- | --------------------|--------------------- | --------- | ------- | ----------|
-| Service Name          | pagerduty_service   | `name`               | `string`  | `""`    | Yes       |
-| Escalation Policy     | pagerduty_service   | `escalation_policy`  | `string`  | `""`    | Yes       |
-| Resolve Timeout       | pagerduty_service   | `resolve_timeout`    | `number`  | `""`    | No        | 
-| Acknowledge Timeout   | pagerduty_service   | `ack_timeout`        | `number`  | `""`    | No        |
-| Alert Creation        | pagerduty_service   | `alert_creation`     | `string`  | `""`    | No        |
-| Escalation Policy     | pagerduty_service   | `escalation_policy`  | `string`  | `""`    | No        |
-| Alert Creation        | pagerduty_service   | `alert_creation`     | `string`  | `""`    | No        |
-| Prefix                | aws_sns_topic       | `prefix`             | `string`  | `""`    | No        |
-| Name                  | aws_sns_topic       | `name`               | `string`  | `""`    | No        |
-| App Id                | pagerduty_extension | `app_id`             | `string`  | `""`    | No        |
-| Authorized User       | pagerduty_extension | `authed_user`        | `string`  | `""`    | No        |
-| Bot UserId            | pagerduty_extension | `bot_user_id`        | `string`  | `""`    | No        |
-| Channel               | pagerduty_extension | `slack_channel`      | `string`  | `""`    | No        |
-| Channel Id            | pagerduty_extension | `slack_channel_id`   | `string`  | `""`    | No        |
-| Configuration URL     | pagerduty_extension | `configuration_url`  | `string`  | `""`    | No        | 
-| Webhook URL           | pagerduty_extension | `url`                | `string`  | `""`    | No        |
-| Notify on Resolve     | pagerduty_extension | `notify_resolve`     | `bool`    | `""`    | No        |
-| Notify on Trigger     | pagerduty_extension | `notify_trigger`     | `bool`    | `""`    | No        |
-| Notify on Escalate    | pagerduty_extension | `notify_escalate`    | `bool`    | `""`    | No        |
-| Notify on Acknowledge | pagerduty_extension | `notify_acknowledge` | `bool`    | `""`    | No        |
-| Notify on Assignment  | pagerduty_extension | `notify_assignments` | `bool`    | `""`    | No        |
-| Notify on Annotate    | pagerduty_extension | `notify_annotate`    | `bool`    | `""`    | No        |
-| Referer URL           | pagerduty_extension | `referer`            | `string`  | `""`    | No        |
-| Team Id               | pagerduty_extension | `slack_team_id`      | `string`  | `""`    | No        |
-| Team Name             | pagerduty_extension | `slack_team_name`    | `string`  | `""`    | No        |
-| Alert on High Urgency | pagerduty_extension | `high_urgency`       | `bool`    | `""`    | No        |
-| Alert on High Urgency | pagerduty_extension | `low_urgency`        | `bool`    | `""`    | No        |
+| Name                  | Resource            | Variable             | Data Type | Default                         | Required? |
+| --------------------- | --------------------|--------------------- | --------- | ------------------------------- | ----------|
+| Service Name          | pagerduty_service   | `name`               | `string`  | `DevOps: Test Service`          | Yes       |
+| Escalation Policy     | pagerduty_service   | `escalation_policy`  | `string`  | `""`                            | Yes       |
+| Description           | pagerduty_service   | `description `       | `string`  | `""`                            | Yes       |
+| Resolve Timeout       | pagerduty_service   | `resolve_timeout`    | `number`  | `14400`                         | No        | 
+| Acknowledge Timeout   | pagerduty_service   | `ack_timeout`        | `number`  | `600`                           | No        |
+| Alert Creation        | pagerduty_service   | `alert_creation`     | `string`  | `"create_alerts_and_incidents"` | No        |
+| Escalation Policy     | pagerduty_service   | `escalation_policy`  | `string`  | `""`                            | No        |
+| Alert Creation        | pagerduty_service   | `alert_creation`     | `string`  | `""`                            | No        |
+| Prefix                | aws_sns_topic       | `prefix`             | `string`  | `""`                            | No        |
+| Name                  | aws_sns_topic       | `name`               | `string`  | `""`                            | No        |
+| App Id                | pagerduty_extension | `app_id`             | `string`  | `""`                            | No        |
+| Authorized User       | pagerduty_extension | `authed_user`        | `string`  | `""`                            | No        |
+| Bot UserId            | pagerduty_extension | `bot_user_id`        | `string`  | `""`                            | No        |
+| Channel               | pagerduty_extension | `slack_channel`      | `string`  | `""`                            | No        |
+| Channel Id            | pagerduty_extension | `slack_channel_id`   | `string`  | `""`                            | No        |
+| Configuration URL     | pagerduty_extension | `configuration_url`  | `string`  | `""`                            | No        | 
+| Webhook URL           | pagerduty_extension | `url`                | `string`  | `""`                            | No        |
+| Notify on Resolve     | pagerduty_extension | `notify_resolve`     | `bool`    | `"true"`                        | No        |
+| Notify on Trigger     | pagerduty_extension | `notify_trigger`     | `bool`    | `"true"`                        | No        |
+| Notify on Escalate    | pagerduty_extension | `notify_escalate`    | `bool`    | `"true"`                        | No        |
+| Notify on Acknowledge | pagerduty_extension | `notify_acknowledge` | `bool`    | `"true"`                        | No        |
+| Notify on Assignment  | pagerduty_extension | `notify_assignments` | `bool`    | `"true"`                        | No        |
+| Notify on Annotate    | pagerduty_extension | `notify_annotate`    | `bool`    | `"true"`                        | No        |
+| Referer URL           | pagerduty_extension | `referer`            | `string`  | `""`                            | No        |
+| Team Id               | pagerduty_extension | `slack_team_id`      | `string`  | `""`                            | No        |
+| Team Name             | pagerduty_extension | `slack_team_name`    | `string`  | `""`                            | No        |
+| Alert on High Urgency | pagerduty_extension | `high_urgency`       | `bool`    | `"true"`                        | No        |
+| Alert on High Urgency | pagerduty_extension | `low_urgency`        | `bool`    | `"true"`                        | No        |
 <br>
 
 ## Predetermined Inputs
 
-| Name          | Resource                      | Variable      | Data Type | Default                          | Required? |
-| --------------| ------------------------------|-------------- | --------- | -------------------------------- | ----------|
-| Name          | pagerduty_service_integration | `name`        | `string`  | `data.pagerduty_vendor.this.name`| Yes       |
-| Service       | pagerduty_service_integration | `service`     | `string`  | `pagerduty_service.this.id`      | Yes       |
-| Vendor        | pagerduty_service_integration | `vendor`      | `string`  | `data.pagerduty_vendor.this.id`  | Yes       |
-| Vendor Name   | pagerduty_vendor              | `name`        | `string`  | `CloudWatch`                     | Yes       |
+| Name          | Resource                      | Variable      | Data Type | Default                                | Required? |
+| --------------| ------------------------------|-------------- | --------- | -------------------------------------- | ----------|
+| Name          | pagerduty_service_integration | `name`        | `string`  | `data.pagerduty_vendor.this.name`      | Yes       |
+| Service       | pagerduty_service_integration | `service`     | `string`  | `pagerduty_service.this.id`            | Yes       |
+| Vendor        | pagerduty_service_integration | `vendor`      | `string`  | `data.pagerduty_vendor.this.id`        | Yes       |
+| Type          | pagerduty_service_integration | `type`        | `string`  | `"aws_cloudwatch_inbound_integration"` | Yes       |
+| Vendor Name   | pagerduty_vendor              | `name`        | `string`  | `"CloudWatch"`                         | Yes       |
 <br>
 
 ## PagerDuty/Slack Extension Schema

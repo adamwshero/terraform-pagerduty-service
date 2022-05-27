@@ -1,3 +1,8 @@
+## pagerduty-v1.0.6 (May 27, 2022)
+
+CHORE:
+* Added default values back to readme.
+
 ## pagerduty-v1.0.5 (May 27, 2022)
 
 BUG:
