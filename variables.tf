@@ -12,38 +12,34 @@ variable "token" {
 variable "escalation_policy" {
   type        = string
   default     = ""
-  description = "Escalation policy for which the PagerDuty service needs to be attached to."
+  description = "(Required) The escalation policy used by this service."
 }
 variable "name" {
   type        = string
   default     = "DevOps: Test Service"
-  description = "This is the display name of the PagerDuty service."
+  description = "(Required) The name of the service."
+}
+
+variable "description" {
+  type        = string
+  default     = ""
+  description = "(Optional) A human-friendly description of the service. If not set, a placeholder of `Managed by Terraform` will be set."
 }
 variable "resolve_timeout" {
   type        = number
   default     = 14400
-  description = "The threshold an incident announcement is made if not yet resolved."
+  description = "(Optional) Time in seconds that an incident is automatically resolved if left open for that long. Disabled if set to the `null` string."
 }
 variable "ack_timeout" {
   type        = number
   default     = 600
-  description = "The threshold an incident announcement is made if not yet accepted."
+  description = "(Optional) Time in seconds that an incident changes to the Triggered State after being Acknowledged. Disabled if set to the `null` string. If not passed in, will default to `1800`."
 }
 
 variable "alert_creation" {
   type        = string
   default     = "create_alerts_and_incidents"
-  description = "Tells PagerDuty to create both alerts for the alarm and an incident."
-}
-variable "alert_grouping" {
-  type        = string
-  default     = "intelligent"
-  description = "Tells PagerDuty how to group similar incidents, if at all."
-}
-variable "alert_grouping_timeout" {
-  type        = number
-  default     = 0
-  description = "Tells PagerDuty how long to continue grouping incidents."
+  description = "(Optional) Must be one of two values. PagerDuty receives events from your monitoring systems and can then create incidents in different ways. Value `create_incidents` is default: events will create an incident that cannot be merged. Value `create_alerts_and_incidents` is the alternative: events will create an alert and then add it to a new incident, these incidents can be merged. This option is recommended."
 }
 
 #################################
@@ -59,7 +55,6 @@ variable "type" {
 #############################
 # AWS SNS Topic
 #############################
-
 variable "prefix" {
   type        = string
   default     = ""
@@ -75,20 +70,25 @@ variable "service_name" {
 #############################
 # PagerDuty Slack Extension
 #############################
+variable "schema_webhook" {
+  type = string
+  default = ""
+  description = "(Required|Optional) The url of the extension. Note: The endpoint URL is Optional API wise in most cases. But in some cases it is a Required parameter. For example, pagerduty_extension_schema named Generic V2 Webhook doesn't accept pagerduty_extension with no endpoint_url, but one with named Slack accepts."
+}
 variable "app_id" {
   type        = string
   default     = ""
-  description = "Id of the Slack app. (e.g. A1KKEUENN)"
+  description = "Id of the PagerDuty Slack app. (e.g. A1KKEUENN)"
 }
 variable "authed_user" {
   type        = string
   default     = ""
-  description = "Id of the auth user. (e.g. A11OKE11NNY)"
+  description = "Id of the auth user. This can be empty probably since auto authorizations for Slack are not working. (e.g. A11OKE11NNY)"
 }
 variable "bot_user_id" {
   type        = string
   default     = ""
-  description = "Id of the bot user. (e.g. A11OKE11NNY)"
+  description = "Id of the bot user from Slack. (e.g. A11OKE11NNY)"
 }
 variable "slack_channel" {
   type        = string

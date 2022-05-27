@@ -1,33 +1,43 @@
+terraform {
+  required_providers {
+    pagerduty = {
+      source  = "PagerDuty/pagerduty"
+      version = "1.9.6"
+    }
+  }
+}
+provider "pagerduty" {
+  token = var.token
+}
+
 #######################
 ##  PagerDuty Service
 #######################
 
-data "pagerduty_escalation_policy" "pd_escalation" {
+data "pagerduty_escalation_policy" "this" {
   name = var.escalation_policy
 }
 
-resource "pagerduty_service" "pd_service" {
+resource "pagerduty_service" "this" {
   name                    = var.name
   auto_resolve_timeout    = var.resolve_timeout
   acknowledgement_timeout = var.ack_timeout
-  escalation_policy       = data.pagerduty_escalation_policy.pd_escalation.id
+  escalation_policy       = data.pagerduty_escalation_policy.this.id
   alert_creation          = var.alert_creation
-  alert_grouping          = var.alert_grouping
-  alert_grouping_timeout  = var.alert_grouping_timeout
 }
 
 ######################################
 ##  PagerDuty CloudWatch Integration
 ######################################
 
-data "pagerduty_vendor" "cloudwatch" {
+data "pagerduty_vendor" "this" {
   name = "CloudWatch"
 }
 
-resource "pagerduty_service_integration" "cloudwatch" {
-  name    = data.pagerduty_vendor.cloudwatch.name
-  service = pagerduty_service.pd_service.id
-  vendor  = data.pagerduty_vendor.cloudwatch.id
+resource "pagerduty_service_integration" "this" {
+  name    = data.pagerduty_vendor.this.name
+  service = pagerduty_service.this.id
+  vendor  = data.pagerduty_vendor.this.id
   # type    = (do not use for Datadog or Cloudwatch "vendor" integrations..only for generic service integrations)
 }
 
@@ -35,7 +45,7 @@ resource "pagerduty_service_integration" "cloudwatch" {
 ##  SNS Topic For PagerDuty
 #############################
 
-resource "aws_sns_topic" "pd_topic" {
+resource "aws_sns_topic" "this" {
   name = "${var.prefix}-${var.service_name}"
 }
 
@@ -43,11 +53,11 @@ resource "aws_sns_topic" "pd_topic" {
 ##  SNS/PagerDuty Topic Subscription
 ######################################
 
-resource "aws_sns_topic_subscription" "pd-topic-subscription" {
-  topic_arn              = aws_sns_topic.pd_topic.arn
+resource "aws_sns_topic_subscription" "this" {
+  topic_arn              = aws_sns_topic.this.arn
   protocol               = "https"
   endpoint_auto_confirms = true #required or the subscription won't auto-confirm
-  endpoint               = "https://events.pagerduty.com/integration/${pagerduty_service_integration.cloudwatch.integration_key}/enqueue"
+  endpoint               = "https://events.pagerduty.com/integration/${pagerduty_service_integration.this.integration_key}/enqueue"
 
 }
 
@@ -55,14 +65,15 @@ resource "aws_sns_topic_subscription" "pd-topic-subscription" {
 ##  PagerDuty Slack Extension
 ###############################
 
-data "pagerduty_extension_schema" "webhook" {
-  name = "Slack V2"
+data "pagerduty_extension_schema" "this" {
+  name = var.schema_webhook
 }
 
-resource "pagerduty_extension" "slack" {
+resource "pagerduty_extension" "this" {
   name              = "DevOps: Slack"
-  extension_schema  = data.pagerduty_extension_schema.webhook.id
-  extension_objects = [pagerduty_service.pd_service.id]
+  endpoint_url      = var.url
+  extension_schema  = data.pagerduty_extension_schema.this.id
+  extension_objects = [pagerduty_service.this.id]
 
   config = <<EOF
   {

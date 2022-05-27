@@ -24,8 +24,6 @@ resource "pagerduty_service" "this" {
   acknowledgement_timeout = var.ack_timeout
   escalation_policy       = data.pagerduty_escalation_policy.this.id
   alert_creation          = var.alert_creation
-  alert_grouping          = var.alert_grouping
-  alert_grouping_timeout  = var.alert_grouping_timeout
 }
 
 ######################################
@@ -59,7 +57,7 @@ resource "aws_sns_topic_subscription" "this" {
   topic_arn              = aws_sns_topic.this.arn
   protocol               = "https"
   endpoint_auto_confirms = true #required or the subscription won't auto-confirm
-  endpoint               = "https://events.pagerduty.com/integration/${pagerduty_service_integration.cloudwatch.integration_key}/enqueue"
+  endpoint               = "https://events.pagerduty.com/integration/${pagerduty_service_integration.this.integration_key}/enqueue"
 
 }
 
@@ -68,11 +66,12 @@ resource "aws_sns_topic_subscription" "this" {
 ###############################
 
 data "pagerduty_extension_schema" "this" {
-  name = "Slack V2"
+  name = var.schema_webhook
 }
 
 resource "pagerduty_extension" "this" {
   name              = "DevOps: Slack"
+  endpoint_url      = var.url
   extension_schema  = data.pagerduty_extension_schema.this.id
   extension_objects = [pagerduty_service.this.id]
 
