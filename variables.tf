@@ -19,7 +19,6 @@ variable "name" {
   default     = "DevOps: Test Service"
   description = "(Required) The name of the service."
 }
-
 variable "description" {
   type        = string
   default     = ""
@@ -35,7 +34,6 @@ variable "ack_timeout" {
   default     = 600
   description = "(Optional) Time in seconds that an incident changes to the Triggered State after being Acknowledged. Disabled if set to the `null` string. If not passed in, will default to `1800`."
 }
-
 variable "alert_creation" {
   type        = string
   default     = "create_alerts_and_incidents"
@@ -45,7 +43,6 @@ variable "alert_creation" {
 #################################
 # PagerDuty Service Integration
 #################################
-
 variable "type" {
   type        = string
   default     = "aws_cloudwatch_inbound_integration"

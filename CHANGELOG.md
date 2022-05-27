@@ -1,3 +1,8 @@
+## pagerduty-v1.0.8 (May 27, 2022)
+
+CHORE:
+* Added description property to the PagerDuty service.
+
 ## pagerduty-v1.0.7 (May 27, 2022)
 
 CHORE:

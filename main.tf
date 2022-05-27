@@ -20,6 +20,7 @@ data "pagerduty_escalation_policy" "this" {
 
 resource "pagerduty_service" "this" {
   name                    = var.name
+  description             = var.description
   auto_resolve_timeout    = var.resolve_timeout
   acknowledgement_timeout = var.ack_timeout
   escalation_policy       = data.pagerduty_escalation_policy.this.id
