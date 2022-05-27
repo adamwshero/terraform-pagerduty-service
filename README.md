@@ -150,34 +150,34 @@ inputs = {
 
 | Name                  | Resource            | Variable             | Data Type | Default                         | Required? |
 | --------------------- | --------------------|--------------------- | --------- | ------------------------------- | ----------|
-| Service Name          | pagerduty_service   | `name`               | `string`  | `DevOps: Test Service`          | Yes       |
+| Service Name          | pagerduty_service   | `name`               | `string`  | `DevOps: Test Service`          | No        |
 | Escalation Policy     | pagerduty_service   | `escalation_policy`  | `string`  | `""`                            | Yes       |
-| Description           | pagerduty_service   | `description `       | `string`  | `""`                            | Yes       |
+| Description           | pagerduty_service   | `description `       | `string`  | `""`                            | No        |
 | Resolve Timeout       | pagerduty_service   | `resolve_timeout`    | `number`  | `14400`                         | No        | 
 | Acknowledge Timeout   | pagerduty_service   | `ack_timeout`        | `number`  | `600`                           | No        |
-| Alert Creation        | pagerduty_service   | `alert_creation`     | `string`  | `"create_alerts_and_incidents"` | No        |
-| Escalation Policy     | pagerduty_service   | `escalation_policy`  | `string`  | `""`                            | No        |
-| Alert Creation        | pagerduty_service   | `alert_creation`     | `string`  | `""`                            | No        |
+| Alert Creation        | pagerduty_service   | `alert_creation`     | `string`  | `"create_alerts_and_incidents"` | Yes       |
+| Escalation Policy     | pagerduty_service   | `escalation_policy`  | `string`  | `""`                            | Yes       |
 | Prefix                | aws_sns_topic       | `prefix`             | `string`  | `""`                            | No        |
-| Name                  | aws_sns_topic       | `name`               | `string`  | `""`                            | No        |
-| App Id                | pagerduty_extension | `app_id`             | `string`  | `""`                            | No        |
+| Name                  | aws_sns_topic       | `name`               | `string`  | `""`                            | Yes       |
+| App Id                | pagerduty_extension | `app_id`             | `string`  | `""`                            | Yes       |
 | Authorized User       | pagerduty_extension | `authed_user`        | `string`  | `""`                            | No        |
-| Bot UserId            | pagerduty_extension | `bot_user_id`        | `string`  | `""`                            | No        |
-| Channel               | pagerduty_extension | `slack_channel`      | `string`  | `""`                            | No        |
-| Channel Id            | pagerduty_extension | `slack_channel_id`   | `string`  | `""`                            | No        |
-| Configuration URL     | pagerduty_extension | `configuration_url`  | `string`  | `""`                            | No        | 
-| Webhook URL           | pagerduty_extension | `url`                | `string`  | `""`                            | No        |
+| Bot UserId            | pagerduty_extension | `bot_user_id`        | `string`  | `""`                            | Yes       |
+| Channel               | pagerduty_extension | `slack_channel`      | `string`  | `""`                            | Yes       |
+| Channel Id            | pagerduty_extension | `slack_channel_id`   | `string`  | `""`                            | Yes       |
+| Configuration URL     | pagerduty_extension | `configuration_url`  | `string`  | `""`                            | Yes       | 
+| Webhook URL           | pagerduty_extension | `url`                | `string`  | `""`                            | Yes       |
 | Notify on Resolve     | pagerduty_extension | `notify_resolve`     | `bool`    | `"true"`                        | No        |
 | Notify on Trigger     | pagerduty_extension | `notify_trigger`     | `bool`    | `"true"`                        | No        |
 | Notify on Escalate    | pagerduty_extension | `notify_escalate`    | `bool`    | `"true"`                        | No        |
 | Notify on Acknowledge | pagerduty_extension | `notify_acknowledge` | `bool`    | `"true"`                        | No        |
 | Notify on Assignment  | pagerduty_extension | `notify_assignments` | `bool`    | `"true"`                        | No        |
 | Notify on Annotate    | pagerduty_extension | `notify_annotate`    | `bool`    | `"true"`                        | No        |
-| Referer URL           | pagerduty_extension | `referer`            | `string`  | `""`                            | No        |
-| Team Id               | pagerduty_extension | `slack_team_id`      | `string`  | `""`                            | No        |
-| Team Name             | pagerduty_extension | `slack_team_name`    | `string`  | `""`                            | No        |
+| Referer URL           | pagerduty_extension | `referer`            | `string`  | `""`                            | Yes       |
+| Team Id               | pagerduty_extension | `slack_team_id`      | `string`  | `""`                            | Yes       |
+| Team Name             | pagerduty_extension | `slack_team_name`    | `string`  | `""`                            | Yes       |
 | Alert on High Urgency | pagerduty_extension | `high_urgency`       | `bool`    | `"true"`                        | No        |
 | Alert on High Urgency | pagerduty_extension | `low_urgency`        | `bool`    | `"true"`                        | No        |
+
 <br>
 
 ## Predetermined Inputs
@@ -189,6 +189,7 @@ inputs = {
 | Vendor        | pagerduty_service_integration | `vendor`      | `string`  | `data.pagerduty_vendor.this.id`        | Yes       |
 | Type          | pagerduty_service_integration | `type`        | `string`  | `"aws_cloudwatch_inbound_integration"` | Yes       |
 | Vendor Name   | pagerduty_vendor              | `name`        | `string`  | `"CloudWatch"`                         | Yes       |
+
 <br>
 
 ## PagerDuty/Slack Extension Schema

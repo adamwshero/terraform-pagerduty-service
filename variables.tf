@@ -78,7 +78,7 @@ variable "schema_webhook" {
 variable "app_id" {
   type        = string
   default     = ""
-  description = "Id of the PagerDuty Slack app. (e.g. A1KKEUENN)"
+  description = "(Required) Id of the PagerDuty Slack app. (e.g. A1KKEUENN)"
 }
 variable "authed_user" {
   type        = string
@@ -88,80 +88,80 @@ variable "authed_user" {
 variable "bot_user_id" {
   type        = string
   default     = ""
-  description = "Id of the bot user from Slack. (e.g. A11OKE11NNY)"
+  description = "(Required) Id of the bot user from Slack. (e.g. A11OKE11NNY)"
 }
 variable "slack_channel" {
   type        = string
   default     = ""
-  description = "The name of the Slack channel (e.g. #devops-pagerduty)."
+  description = "(Required) The name of the Slack channel (e.g. #devops-pagerduty)."
 }
 variable "slack_channel_id" {
   type        = string
   default     = ""
-  description = "The name of the Slack channel Id (e.g. ABC123XYZ456)."
+  description = "(Required) The name of the Slack channel Id (e.g. ABC123XYZ456)."
 }
 variable "configuration_url" {
   type        = string
   default     = ""
-  description = "The URL of your slack space. (e.g. https://acme-corp.slack.com/services/A111AAAAAAAA)"
+  description = "(Required) The URL of your slack space. (e.g. https://acme-corp.slack.com/services/A111AAAAAAAA)"
 }
 variable "url" {
   type        = string
   default     = ""
-  description = "The url that the webhook payload will be sent to for this Extension. (e.g. https://hooks.slack.com/services/A1AAAA11A/A11AAAAAAAA/AaAAaAaAAaaAaAAaaAAAA1AA)"
+  description = "(Required) The url that the webhook payload will be sent to for this Extension. (e.g. https://hooks.slack.com/services/A1AAAA11A/A11AAAAAAAA/AaAAaAaAAaaAaAAaaAAAA1AA)"
 }
 variable "notify_resolve" {
   type        = bool
   default     = "true"
-  description = "Tells PagerDuty to notify Slack when status = resolved."
+  description = "(Required) Tells PagerDuty to notify Slack when status = resolved."
 }
 variable "notify_trigger" {
   type        = bool
   default     = "true"
-  description = "Tells PagerDuty to notify Slack when a trigger occurs."
+  description = "(Required) Tells PagerDuty to notify Slack when a trigger occurs."
 }
 variable "notify_escalate" {
   type        = bool
   default     = "true"
-  description = "Tells PagerDuty to notify Slack when an incident is escalated."
+  description = "(Required) Tells PagerDuty to notify Slack when an incident is escalated."
 }
 variable "notify_acknowledge" {
   type        = bool
   default     = "true"
-  description = "Tells PagerDuty to notify Slack when an incident is acknowledged."
+  description = "(Required) Tells PagerDuty to notify Slack when an incident is acknowledged."
 }
 variable "notify_assignments" {
   type        = bool
   default     = "true"
-  description = "Tells PagerDuty to notify Slack when an incident is assigned."
+  description = "(Required) Tells PagerDuty to notify Slack when an incident is assigned."
 }
 variable "notify_annotate" {
   type        = bool
   default     = "true"
-  description = "Tells PagerDuty to notify Slack when an incident has been updated."
+  description = "(Required) Tells PagerDuty to notify Slack when an incident has been updated."
 }
 variable "referer" {
   type        = string
   default     = ""
-  description = "URL of the PagerDuty Slack integration. (e.g. https://acmecorp.pagerduty.com/services/A1AAAA1/integrations?service_profile=1)"
+  description = "(Required) URL of the PagerDuty Slack integration. (e.g. https://acmecorp.pagerduty.com/services/A1AAAA1/integrations?service_profile=1)"
 }
 variable "slack_team_id" {
   type        = string
   default     = ""
-  description = "The Slack team Id (e.g. AB456XYZ)."
+  description = "(Required) The Slack team Id (e.g. AB456XYZ)."
 }
 variable "slack_team_name" {
   type        = string
   default     = ""
-  description = "The Slack team name (e.g. ACMECORP)."
+  description = "(Required) The Slack team name (e.g. ACMECORP)."
 }
 variable "high_urgency" {
   type        = bool
   default     = "true"
-  description = "Alerts Slack on high urgency incidents."
+  description = "(Required) Alerts Slack on high urgency incidents."
 }
 variable "low_urgency" {
   type        = bool
   default     = "true"
-  description = "Alerts Slack on low urgency incidents."
+  description = "(Required) Alerts Slack on low urgency incidents."
 }

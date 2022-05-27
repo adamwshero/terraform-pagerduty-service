@@ -1,3 +1,8 @@
+## pagerduty-v1.0.7 (May 27, 2022)
+
+CHORE:
+* Added required field values in readme.
+
 ## pagerduty-v1.0.6 (May 27, 2022)
 
 CHORE:
