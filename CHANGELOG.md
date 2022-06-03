@@ -1,3 +1,8 @@
+## pagerduty-v1.0.9 (June 3, 2022)
+
+CHORE:
+* Updated PagerDuty Service provider to v2.5.0
+
 ## pagerduty-v1.0.8 (May 27, 2022)
 
 CHORE:
