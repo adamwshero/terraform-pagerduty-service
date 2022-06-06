@@ -13,7 +13,7 @@ include {
 }
 
 terraform {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//?ref=1.0.5"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.0.10"
 }
 
 inputs = {
@@ -24,6 +24,38 @@ inputs = {
   ack_timeout       = 600
   alert_creation    = "create_alerts_and_incidents"
   token             = local.pagerduty_key.key
+
+    incident_urgency_rule = [{
+      type    = "use_support_hours"
+      urgency = ""
+
+      during_support_hours = [{
+        type    = "constant"
+        urgency = "high"
+      }]
+
+      outside_support_hours = [{
+        type    = "constant"
+        urgency = "low"
+      }]
+    }]
+
+    support_hours = [{
+      type         = "fixed_time_per_day"
+      start_time   = "09:00:00"
+      end_time     = "17:00:00"
+      time_zone    = "America/Denver"
+      days_of_week = [1, 2, 3, 4, 5]
+    }]
+
+    scheduled_actions = [{
+      type       = "urgency_change"
+      to_urgency = "high"
+      at = [{
+        type = "named_time"
+        name = "support_hours_start"
+      }]
+    }]
 
   ### AWS SNS Topic Inputs
   prefix       = "my-prefix"

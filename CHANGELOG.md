@@ -1,3 +1,11 @@
+## pagerduty-v1.0.10 (June 6, 2022)
+
+ENHANCEMENT:
+* Added support for optional `incident_urgency_rule`, `support_hours`, & `scheduled_actions`.
+
+CHORE:
+* Added outputs for PagerDuty URL, Id, and SNS Topic ARN.
+
 ## pagerduty-v1.0.9 (June 3, 2022)
 
 CHORE:

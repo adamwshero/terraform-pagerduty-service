@@ -11,7 +11,7 @@
 # terraform-pagerduty-service
 
 Terraform module that creates:
-- Pagerduty Service
+- Pagerduty Service w/optional Incident Urgency Rule
 - SNS Topic
 - Subscribes the Pagerduty service to the SNS topic
 - Creates a Slack extension to a specified Slack channel
@@ -21,7 +21,7 @@ Terraform module that creates:
 
 ## Examples
 
-Look at our [Terraform example](latest/examples/terraform/) where you can get a better context of usage for both Terraform. The Terragrunt example can be viewed directly from GitHub.
+Look at our complete [Terraform examples](latest/examples/terraform/) where you can get a better context of usage. The Terragrunt example can be viewed directly from GitHub.
 
 ## Usage
 
@@ -30,7 +30,7 @@ You can create a PagerDuty service that comes with its own SNS topic and a subcr
 ### Terraform Example
 ```
 module "pagerduty-service" {
-    source = "git@github.com:adamwshero/terraform-pagerduty-service.git//?ref=1.0.5"
+    source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.0.10"
 
     ### PagerDuty Inputs
     name              = "DevOps: My-Critical-Service"
@@ -39,6 +39,29 @@ module "pagerduty-service" {
     ack_timeout       = 600
     alert_creation    = "create_alerts_and_incidents"
     token             = file(./my_pagerduty_api_key.yaml)
+
+    incident_urgency_rule = [{
+      type    = "use_support_hours"
+      urgency = ""
+
+      during_support_hours = [{
+        type    = "constant"
+        urgency = "high"
+      }]
+
+      outside_support_hours = [{
+        type    = "constant"
+        urgency = "low"
+      }]
+    }]
+
+    support_hours = [{
+      type         = "fixed_time_per_day"
+      start_time   = "09:00:00"
+      end_time     = "17:00:00"
+      time_zone    = "America/Denver"
+      days_of_week = [1, 2, 3, 4, 5]
+    }]
 
     ### AWS SNS Topic Inputs
     prefix       = "my-prefix"
@@ -80,7 +103,7 @@ include {
 }
 
 terraform {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//?ref=1.0.5"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.0.10"
 }
 
 inputs = {
@@ -91,6 +114,29 @@ inputs = {
   ack_timeout       = 600
   alert_creation    = "create_alerts_and_incidents"
   token             = local.pagerduty_key.key
+
+  incident_urgency_rule = [{
+    type    = "use_support_hours"
+    urgency = ""
+
+    during_support_hours = [{
+      type    = "constant"
+      urgency = "high"
+    }]
+
+    outside_support_hours = [{
+      type    = "constant"
+      urgency = "low"
+    }]
+  }]
+
+  support_hours = [{
+    type         = "fixed_time_per_day"
+    start_time   = "09:00:00"
+    end_time     = "17:00:00"
+    time_zone    = "America/Denver"
+    days_of_week = [1, 2, 3, 4, 5]
+  }]
 
   ### AWS SNS Topic Inputs
   prefix       = "my-prefix"
@@ -148,35 +194,38 @@ inputs = {
 
 ## Available Inputs
 
-| Name                  | Resource            | Variable             | Data Type | Default                         | Required? |
-| --------------------- | --------------------|--------------------- | --------- | ------------------------------- | ----------|
-| Service Name          | pagerduty_service   | `name`               | `string`  | `DevOps: Test Service`          | No        |
-| Escalation Policy     | pagerduty_service   | `escalation_policy`  | `string`  | `""`                            | Yes       |
-| Description           | pagerduty_service   | `description `       | `string`  | `""`                            | No        |
-| Resolve Timeout       | pagerduty_service   | `resolve_timeout`    | `number`  | `14400`                         | No        | 
-| Acknowledge Timeout   | pagerduty_service   | `ack_timeout`        | `number`  | `600`                           | No        |
-| Alert Creation        | pagerduty_service   | `alert_creation`     | `string`  | `"create_alerts_and_incidents"` | Yes       |
-| Escalation Policy     | pagerduty_service   | `escalation_policy`  | `string`  | `""`                            | Yes       |
-| Prefix                | aws_sns_topic       | `prefix`             | `string`  | `""`                            | No        |
-| Name                  | aws_sns_topic       | `name`               | `string`  | `""`                            | Yes       |
-| App Id                | pagerduty_extension | `app_id`             | `string`  | `""`                            | Yes       |
-| Authorized User       | pagerduty_extension | `authed_user`        | `string`  | `""`                            | No        |
-| Bot UserId            | pagerduty_extension | `bot_user_id`        | `string`  | `""`                            | Yes       |
-| Channel               | pagerduty_extension | `slack_channel`      | `string`  | `""`                            | Yes       |
-| Channel Id            | pagerduty_extension | `slack_channel_id`   | `string`  | `""`                            | Yes       |
-| Configuration URL     | pagerduty_extension | `configuration_url`  | `string`  | `""`                            | Yes       | 
-| Webhook URL           | pagerduty_extension | `url`                | `string`  | `""`                            | Yes       |
-| Notify on Resolve     | pagerduty_extension | `notify_resolve`     | `bool`    | `"true"`                        | No        |
-| Notify on Trigger     | pagerduty_extension | `notify_trigger`     | `bool`    | `"true"`                        | No        |
-| Notify on Escalate    | pagerduty_extension | `notify_escalate`    | `bool`    | `"true"`                        | No        |
-| Notify on Acknowledge | pagerduty_extension | `notify_acknowledge` | `bool`    | `"true"`                        | No        |
-| Notify on Assignment  | pagerduty_extension | `notify_assignments` | `bool`    | `"true"`                        | No        |
-| Notify on Annotate    | pagerduty_extension | `notify_annotate`    | `bool`    | `"true"`                        | No        |
-| Referer URL           | pagerduty_extension | `referer`            | `string`  | `""`                            | Yes       |
-| Team Id               | pagerduty_extension | `slack_team_id`      | `string`  | `""`                            | Yes       |
-| Team Name             | pagerduty_extension | `slack_team_name`    | `string`  | `""`                            | Yes       |
-| Alert on High Urgency | pagerduty_extension | `high_urgency`       | `bool`    | `"true"`                        | No        |
-| Alert on High Urgency | pagerduty_extension | `low_urgency`        | `bool`    | `"true"`                        | No        |
+| Name                  | Resource            | Variable                | Data Type     | Default                         | Required? |
+| --------------------- | --------------------|------------------------ | ------------- | ------------------------------- | ----------|
+| Service Name          | pagerduty_service   | `name`                  | `string`      | `DevOps: Test Service`          | No        |
+| Escalation Policy     | pagerduty_service   | `escalation_policy`     | `string`      | `""`                            | Yes       |
+| Description           | pagerduty_service   | `description `          | `string`      | `""`                            | No        |
+| Resolve Timeout       | pagerduty_service   | `resolve_timeout`       | `number`      | `14400`                         | No        | 
+| Acknowledge Timeout   | pagerduty_service   | `ack_timeout`           | `number`      | `600`                           | No        |
+| Alert Creation        | pagerduty_service   | `alert_creation`        | `string`      | `"create_alerts_and_incidents"` | Yes       |
+| Escalation Policy     | pagerduty_service   | `escalation_policy`     | `string`      | `""`                            | Yes       |
+| Incident Urgency Rule | pagerduty_service   | `incident_urgency_rule` | `set(object)` | `[]`                            | No        |
+| Support Hours         | pagerduty_service   | `escalation_policy`     | `set(object)` | `[]`                            | No        |
+| Scheduled Actions     | pagerduty_service   | `escalation_policy`     | `set(object)` | `[]`                            | No        |
+| Prefix                | aws_sns_topic       | `prefix`                | `string`      | `""`                            | No        |
+| Name                  | aws_sns_topic       | `name`                  | `string`      | `""`                            | Yes       |
+| App Id                | pagerduty_extension | `app_id`                | `string`      | `""`                            | Yes       |
+| Authorized User       | pagerduty_extension | `authed_user`           | `string`      | `""`                            | No        |
+| Bot UserId            | pagerduty_extension | `bot_user_id`           | `string`      | `""`                            | Yes       |
+| Channel               | pagerduty_extension | `slack_channel`         | `string`      | `""`                            | Yes       |
+| Channel Id            | pagerduty_extension | `slack_channel_id`      | `string`      | `""`                            | Yes       |
+| Configuration URL     | pagerduty_extension | `configuration_url`     | `string`      | `""`                            | Yes       | 
+| Webhook URL           | pagerduty_extension | `url`                   | `string`      | `""`                            | Yes       |
+| Notify on Resolve     | pagerduty_extension | `notify_resolve`        | `bool`        | `"true"`                        | No        |
+| Notify on Trigger     | pagerduty_extension | `notify_trigger`        | `bool`        | `"true"`                        | No        |
+| Notify on Escalate    | pagerduty_extension | `notify_escalate`       | `bool`        | `"true"`                        | No        |
+| Notify on Acknowledge | pagerduty_extension | `notify_acknowledge`    | `bool`        | `"true"`                        | No        |
+| Notify on Assignment  | pagerduty_extension | `notify_assignments`    | `bool`        | `"true"`                        | No        |
+| Notify on Annotate    | pagerduty_extension | `notify_annotate`       | `bool`        | `"true"`                        | No        |
+| Referer URL           | pagerduty_extension | `referer`               | `string`      | `""`                            | Yes       |
+| Team Id               | pagerduty_extension | `slack_team_id`         | `string`      | `""`                            | Yes       |
+| Team Name             | pagerduty_extension | `slack_team_name`       | `string`      | `""`                            | Yes       |
+| Alert on High Urgency | pagerduty_extension | `high_urgency`          | `bool`        | `"true"`                        | No        |
+| Alert on High Urgency | pagerduty_extension | `low_urgency`           | `bool`        | `"true"`                        | No        |
 
 <br>
 

@@ -25,6 +25,51 @@ resource "pagerduty_service" "this" {
   acknowledgement_timeout = var.ack_timeout
   escalation_policy       = data.pagerduty_escalation_policy.this.id
   alert_creation          = var.alert_creation
+  dynamic "incident_urgency_rule" {
+    for_each = var.incident_urgency_rule
+    content {
+      type = incident_urgency_rule.value["type"]
+      urgency = incident_urgency_rule.value["urgency"]
+      dynamic "during_support_hours" {
+        for_each = incident_urgency_rule.value.during_support_hours
+        content {
+          type = during_support_hours.value["type"]
+          urgency = during_support_hours.value["urgency"]
+        }
+      } 
+      dynamic "outside_support_hours" {
+        for_each = incident_urgency_rule.value.outside_support_hours
+        content {
+          type = outside_support_hours.value["type"]
+          urgency = outside_support_hours.value["urgency"]
+        }
+      }
+    }
+  }
+  dynamic "support_hours" {
+    for_each = var.support_hours
+    content {
+      type = support_hours.value["type"]
+      start_time = support_hours.value["start_time"]
+      end_time = support_hours.value["end_time"]
+      time_zone = support_hours.value["time_zone"]
+      days_of_week = support_hours.value["days_of_week"]
+    }
+  }
+  dynamic "scheduled_actions" {
+    for_each = var.scheduled_actions
+    content {
+      to_urgency = scheduled_actions.value["to_urgency"]
+      type = scheduled_actions.value["type"]
+      dynamic "at" {
+        for_each = scheduled_actions.value.at
+        content {
+          name = at.value["name"]
+          type = at.value["type"]
+        }
+      }
+    }
+  }
 }
 
 ######################################
