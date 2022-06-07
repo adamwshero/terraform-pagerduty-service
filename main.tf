@@ -25,6 +25,20 @@ resource "pagerduty_service" "this" {
   acknowledgement_timeout = var.ack_timeout
   escalation_policy       = data.pagerduty_escalation_policy.this.id
   alert_creation          = var.alert_creation
+  dynamic "alert_grouping_parameters" {
+    for_each = var.alert_grouping_parameters
+    content {
+      type = alert_grouping_parameters.value["type"]
+      dynamic "config" {
+        for_each = alert_grouping_parameters.value.config
+        content {
+          timeout = config.value["timeout"]
+          aggregate = config.value["aggregate"]
+          fields = config.value["fields"]
+        }
+      }      
+    }
+  }
   dynamic "incident_urgency_rule" {
     for_each = var.incident_urgency_rule
     content {
