@@ -20,9 +20,9 @@ output "pagerduty_service_topic_arn" {
 }
 output "slack_extension_id" {
   description = "The Id of the Slack extension."
-  value = pagerduty_extension.this.id
+  value = pagerduty_extension.this[count.index].id
 }
 output "slack_extension_url" {
   description = "URL at which the entity is uniquely displayed in the Web app."
-  value = pagerduty_extension.this.html_url
+  value = pagerduty_extension.this[count.index].html_url
 }
