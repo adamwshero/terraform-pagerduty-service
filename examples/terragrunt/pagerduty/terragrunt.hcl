@@ -10,13 +10,13 @@ include {
 }
 
 terraform {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.0.5"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
 }
 
 // --------- BASIC Inputs --------- //
 
 inputs = {
-  ### PagerDuty Inputs
+  // PagerDuty Service
   name              = "DevOps: My-Critical-Service"
   escalation_policy = "Escalation: DevOps Engineering"
   resolve_timeout   = 14400
@@ -24,11 +24,12 @@ inputs = {
   alert_creation    = "create_alerts_and_incidents"
   token             = local.pagerduty_key.key
 
-  ### AWS SNS Topic Inputs
+  // SNS Topic
   prefix       = "my-prefix"
   service_name = "AcmeCorp-Elasticsearch"
 
-  ### Slack Extension Inputs
+  // Slack Extension
+  create_slack_extension = true
   schema_webhook     = "Slack V2"
   app_id             = "A1AAAAAAA"
   authed_user        = "A11AAA11AAA"
@@ -49,10 +50,11 @@ inputs = {
   low_urgency        = true
 }
 
-// --------- BASIC Inputs + Incident Urgency Rule w/Fixed Urgency --------- //
-
+//////////////////////////////////////////////////////////////////
+// --- BASIC Inputs + Incident Urgency Rule w/Fixed Urgency --- //
+//////////////////////////////////////////////////////////////////
 inputs = {
-  ### PagerDuty Inputs
+  // PagerDuty Service
   name              = "DevOps: My-Critical-Service"
   escalation_policy = "Escalation: DevOps Engineering"
   resolve_timeout   = 14400
@@ -75,11 +77,12 @@ inputs = {
     }]
   }]
 
-  ### AWS SNS Topic Inputs
+  // SNS Topic
   prefix       = "my-prefix"
   service_name = "AcmeCorp-Elasticsearch"
 
-  ### Slack Extension Inputs
+  // Slack Extension
+  create_slack_extension = true
   schema_webhook     = "Slack V2"
   app_id             = "A1AAAAAAA"
   authed_user        = "A11AAA11AAA"
@@ -99,11 +102,12 @@ inputs = {
   high_urgency       = true
   low_urgency        = true
 }
-
-// --------- BASIC Inputs + Incident Urgency Rule w/Support Hours (Variable Urgency) --------- //
-
+/////////////////////////////////////////////////////////////////////////////////////
+// --- BASIC Inputs + Incident Urgency Rule w/Support Hours (Variable Urgency) --- //
+/////////////////////////////////////////////////////////////////////////////////////
 inputs = {
-  ### PagerDuty Inputs
+  // PagerDuty Service
+  create_slack_extension = true
   name              = "DevOps: My-Critical-Service"
   escalation_policy = "Escalation: DevOps Engineering"
   resolve_timeout   = 14400
@@ -143,11 +147,11 @@ inputs = {
     }]
   }]
 
-  ### AWS SNS Topic Inputs
+  // AWS SNS Topic
   prefix       = "my-prefix"
   service_name = "AcmeCorp-Elasticsearch"
 
-  ### Slack Extension Inputs
+  // Slack Extension
   schema_webhook     = "Slack V2"
   app_id             = "A1AAAAAAA"
   authed_user        = "A11AAA11AAA"

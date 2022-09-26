@@ -142,7 +142,8 @@ inputs = {
   prefix       = "my-prefix"
   service_name = "AcmeCorp-Elasticsearch"
 
-  ### Slack Extension Inputs
+  // Slack Extension
+  create_slack_extension = true
   schema_webhook     = "Slack V2"
   app_id             = "A1AAAAAAA"
   authed_user        = "A11AAA11AAA"
@@ -240,6 +241,12 @@ inputs = {
 | Vendor Name   | pagerduty_vendor              | `name`        | `string`  | `"CloudWatch"`                         | Yes       |
 
 <br>
+
+## Outputs
+
+| Name                                     | Description                            |
+|------------------------------------------|--------------------------------------- | 
+
 
 ## PagerDuty/Slack Extension Schema
  * https://developer.pagerduty.com/api-reference/YXBpOjExMjA5NTQ0-pager-duty-slack-integration-api (See /slack_schema.json)
