@@ -112,13 +112,13 @@ resource "aws_sns_topic_subscription" "this" {
 ###############################
 
 data "pagerduty_extension_schema" "this" {
-  count = var.create_slack_extension ? 1 : 0
+  for_each = var.create_slack_extension == true ? [true] : []
 
   name = var.schema_webhook
 }
 
 resource "pagerduty_extension" "this" {
-  count = var.create_slack_extension ? 1 : 0
+  for_each = var.create_slack_extension == true ? [true] : []
 
   name              = var.extension_name
   endpoint_url      = var.endpoint_url
