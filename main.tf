@@ -122,7 +122,7 @@ resource "pagerduty_extension" "this" {
 
   name              = var.extension_name
   endpoint_url      = var.endpoint_url
-  extension_schema  = data.pagerduty_extension_schema.this.id
+  extension_schema  = data.pagerduty_extension_schema.this[count.index].id
   extension_objects = [pagerduty_service.this.id]
   config = var.config
 
