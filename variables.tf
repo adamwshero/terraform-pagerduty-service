@@ -97,6 +97,11 @@ variable "extension_name" {
   type        = string
   default     = null
 }
+variable "config" {
+  description = "(Optional) The configuration of the service extension as string containing plain JSON-encoded data."
+  type        = string
+  default     = null
+}
 variable "schema_webhook" {
   type        = string
   default     = null
