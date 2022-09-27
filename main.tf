@@ -75,7 +75,7 @@ resource "pagerduty_service_integration" "this" {
 
   name    = data.pagerduty_vendor.this.name  
   vendor  = data.pagerduty_vendor.this.id
-  service = pagerduty_service.this[0].id
+  service = pagerduty_service.this.id
   # type    = (do not use for Datadog or Cloudwatch "vendor" integrations..only for generic service integrations)
 }
 resource "aws_sns_topic" "this" {

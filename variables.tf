@@ -82,6 +82,11 @@ variable "type" {
 #############################
 # AWS SNS Topic
 #############################
+variable "create_sns_topic" {
+  description = "Decide if we want to use SNS for message delivery to our tool of choice (e.g. CloudWatch/DataDog)"
+  type        = bool
+  default     = false
+}
 variable "service_name" {
   type        = string
   default     = null
