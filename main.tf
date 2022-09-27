@@ -10,9 +10,7 @@ provider "pagerduty" {
   token = var.token
 }
 
-#######################
-##  PagerDuty Service
-#######################
+//  PagerDuty Service
 
 data "pagerduty_escalation_policy" "this" {
   name = var.escalation_policy
@@ -72,9 +70,7 @@ resource "pagerduty_service" "this" {
   }
 }
 
-######################################
-##  PagerDuty CloudWatch Integration
-######################################
+//  PagerDuty CloudWatch Integration
 
 data "pagerduty_vendor" "this" {
   name = "CloudWatch"
@@ -87,17 +83,13 @@ resource "pagerduty_service_integration" "this" {
   # type    = (do not use for Datadog or Cloudwatch "vendor" integrations..only for generic service integrations)
 }
 
-#############################
-##  SNS Topic For PagerDuty
-#############################
+//  SNS Topic For PagerDuty
 
 resource "aws_sns_topic" "this" {
   name = "${var.prefix}-${var.service_name}"
 }
 
-######################################
-##  SNS/PagerDuty Topic Subscription
-######################################
+//  SNS/PagerDuty Topic Subscription
 
 resource "aws_sns_topic_subscription" "this" {
   topic_arn              = aws_sns_topic.this.arn
@@ -107,22 +99,20 @@ resource "aws_sns_topic_subscription" "this" {
 
 }
 
-###############################
-##  PagerDuty Slack Extension
-###############################
+//  PagerDuty Slack Extension
 
 data "pagerduty_extension_schema" "this" {
-  for_each = var.create_slack_extension == true ? [true] : []
+  count = var.create_slack_extension ? 1 : 0
 
   name = var.schema_webhook
 }
 
 resource "pagerduty_extension" "this" {
-  for_each = var.create_slack_extension == true ? [true] : []
+  count = var.create_slack_extension ? 1 : 0
 
   name              = var.extension_name
   endpoint_url      = var.endpoint_url
-  extension_schema  = data.pagerduty_extension_schema.this[0].id
+  extension_schema  = data.pagerduty_extension_schema.this[count.index].id
   extension_objects = [pagerduty_service.this.id]
   config = var.config
 }

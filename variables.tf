@@ -85,6 +85,15 @@ variable "service_name" {
 }
 
 #############################
+# PagerDuty Extension Schema
+#############################
+variable "schema_webhook" {
+  type        = string
+  default     = null
+  description = "(Required|Optional) The url of the extension. Note: The endpoint URL is Optional API wise in most cases. But in some cases it is a Required parameter. For example, pagerduty_extension_schema named Generic V2 Webhook doesn't accept pagerduty_extension with no endpoint_url, but one with named Slack accepts."
+}
+
+#############################
 # PagerDuty Slack Extension
 #############################
 variable "create_slack_extension" {
@@ -101,11 +110,6 @@ variable "config" {
   description = "(Optional) The configuration of the service extension as string containing plain JSON-encoded data."
   type        = string
   default     = null
-}
-variable "schema_webhook" {
-  type        = string
-  default     = null
-  description = "(Required|Optional) The url of the extension. Note: The endpoint URL is Optional API wise in most cases. But in some cases it is a Required parameter. For example, pagerduty_extension_schema named Generic V2 Webhook doesn't accept pagerduty_extension with no endpoint_url, but one with named Slack accepts."
 }
 variable "app_id" {
   type        = string
