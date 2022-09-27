@@ -109,12 +109,7 @@ resource "pagerduty_extension" "this" {
 
 resource "pagerduty_maintenance_window" "this" {
   for_each = {
-    for window in var.maintenance_windows : window.services => {
-      start_time  = window.start_time
-      end_time    = window.end_time
-      services    = window.services
-    }
-    if var.enable_maintenance_windows == true
+    for k,v in var.maintenance_windows : k => v if var.enable_maintenance_windows == true
   }
     start_time = each.value.start_time
     end_time = each.value.end_time
