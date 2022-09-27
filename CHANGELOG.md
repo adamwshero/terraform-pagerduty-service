@@ -3,14 +3,15 @@
 CHORE:
 * Updated pinned provider to 2.6.2
 * Simplified incident_urgency and scheduled actions map variables
-* Added outputs for Slack extension
+* Added outputs for Slack Extension
+* Added outputs for Service Integration
 
-FEATURE (BREAKING CHANGE):
+FEATURE: (BREAKING CHANGES!)
 * Removed Extension configuration from module and into input block for more control.
 * Added option to disable/enable Slack extension
 * Added option to disable/enable Service integration
 * Added option to disable/enable SNS Topic
-* Removed hard-coded "CloudWatch" vendor integration. Allowed to be dynamic now.
+* Removed hard-coded "CloudWatch" vendor integration. Allowed to be dynamic input now.
 * Renamed `shema_webhook` variable to `schema_name`
 
 ## 1.0.10 (June 6, 2022)

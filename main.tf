@@ -106,3 +106,11 @@ resource "pagerduty_extension" "this" {
   extension_objects = [pagerduty_service.this.id]
   config = var.config
 }
+
+resource "pagerduty_maintenance_window" "this" {
+  for_each = var.maintenance_windows != null && var.enable_maintenance_window == true ? [true] : []
+
+  start_time  = each.value.start_time
+  end_time    = each.value.end_time
+  services    = [pagerduty_service.this.id]
+}

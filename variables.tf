@@ -93,6 +93,21 @@ variable "service_name" {
   description = "Name of service to append to SNS topic prefix for all PagerDuty subscribed SNS topics"
 }
 
+################################
+# PagerDuty Maintenance Windows
+################################
+variable "enable_maintenance_windows" {
+  description = "Decide to create maintenance window(s) for this service."
+  type        = bool
+  default     = false
+}
+variable "maintenance_windows" {
+  type    = any
+  default = []
+  //   start_time  = "2015-11-09T20:00:00-05:00"
+  // end_time    = "2015-11-09T22:00:00-05:00"
+}
+
 #############################
 # PagerDuty Extension Schema
 #############################
