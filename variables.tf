@@ -11,17 +11,17 @@ variable "token" {
 #####################
 variable "escalation_policy" {
   type        = string
-  default     = ""
+  default     = null
   description = "(Required) The escalation policy used by this service."
 }
 variable "name" {
   type        = string
-  default     = "DevOps: Test Service"
+  default     = null
   description = "(Required) The name of the service."
 }
 variable "description" {
   type        = string
-  default     = ""
+  default     = null
   description = "(Optional) A human-friendly description of the service. If not set, a placeholder of `Managed by Terraform` will be set."
 }
 variable "resolve_timeout" {
@@ -40,57 +40,31 @@ variable "alert_creation" {
   description = "(Optional) Must be one of two values. PagerDuty receives events from your monitoring systems and can then create incidents in different ways. Value `create_incidents` is default: events will create an incident that cannot be merged. Value `create_alerts_and_incidents` is the alternative: events will create an alert and then add it to a new incident, these incidents can be merged. This option is recommended."
 }
 variable "incident_urgency_rule" {
-  type = set(object(
-    {
-      during_support_hours = list(object(
-        {
-          type    = string
-          urgency = string
-        }
-      ))
-      outside_support_hours = list(object(
-        {
-          type    = string
-          urgency = string
-        }
-      ))
-      type    = string
-      urgency = string
-    }
-  ))
+  type    = any
   default = []
 }
 variable "support_hours" {
-  type = set(object(
-    {
-      type         = string
-      start_time   = string
-      end_time     = string
-      days_of_week = list(number)
-      time_zone    = string
-    }
-  ))
+  type    = any
   default = []
 }
 variable "scheduled_actions" {
-  type = set(object(
-    {
-      at = list(object(
-        {
-          name = string
-          type = string
-        }
-      ))
-      to_urgency = string
-      type       = string
-    }
-  ))
+  type    = any
   default = []
 }
 
 #################################
 # PagerDuty Service Integration
 #################################
+variable "enable_service_integration" {
+  description = "Decide to create a service integration or not (e.g. `Cloudwatch`, `DataDog`)"
+  type        = bool
+  default     = false
+}
+variable "vendor_name" {
+  description = "(Required) The vendor name to use to find a vendor in the PagerDuty API."
+  type        = string
+  default     = null
+}
 variable "type" {
   type        = string
   default     = "aws_cloudwatch_inbound_integration"
@@ -100,60 +74,92 @@ variable "type" {
 #############################
 # AWS SNS Topic
 #############################
-variable "prefix" {
-  type        = string
-  default     = ""
-  description = "Default prefix for all PagerDuty subscribed SNS topics"
+variable "create_sns_topic" {
+  description = "Decide if we want to use SNS for message delivery to our tool of choice (e.g. CloudWatch/DataDog)"
+  type        = bool
+  default     = false
 }
-
 variable "service_name" {
   type        = string
-  default     = ""
+  default     = null
   description = "Name of service to append to SNS topic prefix for all PagerDuty subscribed SNS topics"
 }
 
+################################
+# PagerDuty Maintenance Windows
+################################
+variable "enable_maintenance_windows" {
+  description = "Decide to create maintenance window(s) for this service."
+  type        = bool
+  default     = false
+}
+variable "maintenance_windows" {
+  description = "value"
+  type        = any
+  default = []
+}
+
 #############################
-# PagerDuty Slack Extension
+# PagerDuty Extension Schema
 #############################
-variable "schema_webhook" {
-  type = string
-  default = ""
-  description = "(Required|Optional) The url of the extension. Note: The endpoint URL is Optional API wise in most cases. But in some cases it is a Required parameter. For example, pagerduty_extension_schema named Generic V2 Webhook doesn't accept pagerduty_extension with no endpoint_url, but one with named Slack accepts."
+variable "schema_name" {
+  type        = string
+  default     = null
+  description = "(Required) The extension name to use to find an extension vendor in the PagerDuty API."
+}
+
+######################
+# PagerDuty Extension
+######################
+variable "create_extension" {
+  description = "Decide to create the Slack integration or not."
+  type        = bool
+  default     = false
+}
+variable "extension_name" {
+  description = "(Optional) The name of the service extension."
+  type        = string
+  default     = null
+}
+variable "config" {
+  description = "(Optional) The configuration of the service extension as string containing plain JSON-encoded data."
+  type        = string
+  default     = null
 }
 variable "app_id" {
   type        = string
-  default     = ""
+  default     = null
   description = "(Required) Id of the PagerDuty Slack app. (e.g. A1KKEUENN)"
 }
 variable "authed_user" {
   type        = string
-  default     = ""
+  default     = null
   description = "Id of the auth user. This can be empty probably since auto authorizations for Slack are not working. (e.g. A11OKE11NNY)"
 }
 variable "bot_user_id" {
   type        = string
-  default     = ""
+  default     = null
   description = "(Required) Id of the bot user from Slack. (e.g. A11OKE11NNY)"
 }
 variable "slack_channel" {
   type        = string
-  default     = ""
+  default     = null
   description = "(Required) The name of the Slack channel (e.g. #devops-pagerduty)."
 }
 variable "slack_channel_id" {
   type        = string
-  default     = ""
+  default     = null
   description = "(Required) The name of the Slack channel Id (e.g. ABC123XYZ456)."
 }
 variable "configuration_url" {
   type        = string
-  default     = ""
+  default     = null
   description = "(Required) The URL of your slack space. (e.g. https://acme-corp.slack.com/services/A111AAAAAAAA)"
 }
-variable "url" {
+variable "endpoint_url" {
   type        = string
-  default     = ""
-  description = "(Required) The url that the webhook payload will be sent to for this Extension. (e.g. https://hooks.slack.com/services/A1AAAA11A/A11AAAAAAAA/AaAAaAaAAaaAaAAaaAAAA1AA)"
+  default     = null
+  description = "(Required|Optional) The url of the extension. Note: The endpoint URL is Optional API wise in most cases. But in some cases it is a Required parameter. For example, pagerduty_extension_schema named Generic V2 Webhook doesn't accept pagerduty_extension with no endpoint_url, but one with named Slack accepts. (e.g. https://hooks.slack.com/services/A1AAAA11A/A11AAAAAAAA/AaAAaAaAAaaAaAAaaAAAA1AA)"
 }
 variable "notify_resolve" {
   type        = bool
@@ -187,17 +193,17 @@ variable "notify_annotate" {
 }
 variable "referer" {
   type        = string
-  default     = ""
+  default     = null
   description = "(Required) URL of the PagerDuty Slack integration. (e.g. https://acmecorp.pagerduty.com/services/A1AAAA1/integrations?service_profile=1)"
 }
 variable "slack_team_id" {
   type        = string
-  default     = ""
+  default     = null
   description = "(Required) The Slack team Id (e.g. AB456XYZ)."
 }
 variable "slack_team_name" {
   type        = string
-  default     = ""
+  default     = null
   description = "(Required) The Slack team name (e.g. ACMECORP)."
 }
 variable "high_urgency" {

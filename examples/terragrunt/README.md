@@ -1,8 +1,10 @@
-## Basic Terraform Example
+## Basic Terragrunt Example
 ```
-module "pagerduty-service" {
+terraform {
   source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.0"
+}
 
+inputs = {
   // PagerDuty Service
   name              = "My Critical Service"
   description       = "Service for all prod services."
@@ -10,13 +12,16 @@ module "pagerduty-service" {
   alert_creation    = "create_alerts_and_incidents"
   resolve_timeout   = 14400
   ack_timeout       = 600
-  token             = file("${path.module}/my_pagerduty_api_key.yaml")
+  token             = local.pagerduty_key.key
+}
 ```
-## Terraform Example w/CloudWatch & SNS Integration
+## Terragrunt Example w/CloudWatch & SNS Integration
 ```
-module "pagerduty-service" {
+terraform {
   source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.0"
+}
 
+inputs = {
   // PagerDuty Service
   name              = "My Critical Service"
   description       = "Service for all prod services."
@@ -24,7 +29,8 @@ module "pagerduty-service" {
   alert_creation    = "create_alerts_and_incidents"
   resolve_timeout   = 14400
   ack_timeout       = 600
-  token             = file("${path.module}/my_pagerduty_api_key.yaml")
+  token             = local.pagerduty_key.key
+
   // Service Integration
   enable_service_integration = true
   vendor_name                = "CloudWatch"
@@ -34,12 +40,14 @@ module "pagerduty-service" {
   service_name     = "AcmeCorp-Elasticsearch"
 }
 ```
-## Terraform Example w/CloudWatch & SNS Integration + Incident Urgency Rules + Support Hours
+## Terragrunt Example w/CloudWatch & SNS Integration + Incident Urgency Rules + Support Hours
 
 ```
-module "pagerduty-service" {
+terraform {
   source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.0"
+}
 
+inputs = {
   // PagerDuty Service
   name              = "My Critical Service"
   description       = "Service for all prod services."
@@ -47,7 +55,7 @@ module "pagerduty-service" {
   alert_creation    = "create_alerts_and_incidents"
   resolve_timeout   = 14400
   ack_timeout       = 600
-  token             = file("${path.module}/my_pagerduty_api_key.yaml")
+  token             = local.pagerduty_key.key
 
   // Incident Urgency Rules
   incident_urgency_rule = [{
@@ -86,11 +94,13 @@ module "pagerduty-service" {
   service_name     = "AcmeCorp-Elasticsearch"
 }
 ```
-## Terraform Example w/CloudWatch & SNS Integration + Incident Urgency Rules + Support Hours + Maintenance Windows
+## Terragrunt Example w/CloudWatch & SNS Integration + Incident Urgency Rules + Support Hours + Maintenance Windows
 ```
-module "pagerduty-service" {
+terraform {
   source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.0"
+}
 
+inputs = {
   // PagerDuty Service
   name              = "My Critical Service"
   description       = "Service for all prod services."
@@ -98,8 +108,8 @@ module "pagerduty-service" {
   alert_creation    = "create_alerts_and_incidents"
   resolve_timeout   = 14400
   ack_timeout       = 600
-  token             = file("${path.module}/my_pagerduty_api_key.yaml")
-  
+  token             = local.pagerduty_key.key
+
   // Maintenance Windows
   enable_maintenance_windows = true
   maintenance_windows = [
@@ -154,9 +164,11 @@ module "pagerduty-service" {
 ```
 ## Terragrunt Example w/CloudWatch & SNS Integration + Incident Urgency Rules + Support Hours + Maintenance Windows + Slack Extension
 ```
-module "pagerduty-service" {
+terraform {
   source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.0"
+}
 
+inputs = {
   // PagerDuty Service
   name              = "My Critical Service"
   description       = "Service for all prod services."
@@ -164,8 +176,8 @@ module "pagerduty-service" {
   alert_creation    = "create_alerts_and_incidents"
   resolve_timeout   = 14400
   ack_timeout       = 600
-  token             = file("${path.module}/my_pagerduty_api_key.yaml")
-  
+  token             = local.pagerduty_key.key
+
   // Maintenance Windows
   enable_maintenance_windows = true
   maintenance_windows = [
@@ -218,10 +230,10 @@ module "pagerduty-service" {
   service_name     = "AcmeCorp-Elasticsearch"
 
   // PagerDuty Extension
-  create_extension       = true
-  extension_name         = "DevOps: Slack"
-  schema_webhook         = "Generic V1 Webhook"
-  config = templatefile("${path.module}/slack/config.json.tpl", {    
+  create_extension = true
+  extension_name   = "DevOps: Slack"
+  schema_webhook   = "Generic V1 Webhook"
+  config = templatefile("${get_terragrunt_dir()}/slack/config.json.tpl", {
     app_id             = "A1AAAAAAA"
     authed_user        = "A11AAA11AAA"
     bot_user_id        = "A111AAAA11A"
