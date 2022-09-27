@@ -1,7 +1,7 @@
 ## 1.1.0 (September 27, 2022)
 
 CHORE:
-* Updated pinned provider to 2.6.2
+* Updated pinned "PagerDuty/pagerduty" provider to 2.6.2
 * Added outputs for Slack Extension
 * Added outputs for Service Integration
 * Updated all examples

@@ -17,10 +17,11 @@
 - Create a Pagerduty Service
 - Supports many maintenance windows
 - Optional Incident Urgency Rule
-- Optional Scheduled Actions
+- Optional Scheduled Actions <span style="color:red">[Bug Reported!]</span>
 - Optional SNS Topic for integration notifications
 - Ability to Subscribe the Pagerduty service to an SNS topic (if enabled)
-- Optional Slack extension to a specified Slack channel
+- Manages extension configurations using the `templatefile()` Terraform function
+- Optional extension (Slack Example Provided)
 - Option to create a Service integration (e.g. CloudWatch, DataDog, etc.)
 <br>
 
@@ -38,12 +39,14 @@ You can create a PagerDuty service that comes with its own SNS topic and a subcr
 <br>
 
 ## Open Issues
-- PagerDuty is currently aware that the Slack extension must be manually authorized in the PagerDuty Service page to connect to a given Slack channel once the service is created. There is no ETA on this fix
+* PagerDuty is currently aware that the Slack extension must be manually authorized in the PagerDuty Service page to connect to a given Slack channel once the service is created. There is no ETA on this fix
+* A scheduled_actions block is required when using type = `use_support_hours` in incident_urgency_rule. However, when this value is used, the urgency attribute must also be removed. Upon removing this attribute, we encounter an index error. This is on our list of fixes to make soon. As a workaround, you can still use `support_hours` and `incident_urgency_rule` using `constant`.
+
+
 <br>
 
 ## Special Notes
 * (Scheduled Actions)
-  * You cannot use both `scheduled_actions` and `incident_urgency_rule` together. You can only choose one method of escalation.
   * A scheduled_actions block is required when using type = `use_support_hours` in incident_urgency_rule.
 
 * (Incident Urgency Rule)

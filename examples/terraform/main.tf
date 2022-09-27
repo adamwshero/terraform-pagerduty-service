@@ -43,23 +43,13 @@ module "pagerduty-service" {
   // Support Hours
   support_hours = [
     {
-      type = "fixed_time_per_day"
-      time_zone = "America/Lima"
+      type         = "fixed_time_per_day"
+      time_zone    = "America/Lima"
       days_of_week = [1, 2, 3, 4, 5]
-      start_time  = "05:00:00"
-      end_time    = "16:00:00"
+      start_time   = "05:00:00"
+      end_time     = "16:00:00"
     }
   ]
-
-  // Scheduled Actions
-  scheduled_actions = [{
-    type       = "urgency_change"
-    to_urgency = "high"
-    at = [{
-      type = "named_time"
-      name = "support_hours_start"
-    }]
-  }]
 
   // Service Integration
   enable_service_integration = true

@@ -57,6 +57,34 @@ inputs = {
   ack_timeout       = 600
   token             = local.pagerduty_key.key
 
+  // Incident Urgency Rules
+  incident_urgency_rule = [{
+    type    = "constant"
+    urgency = "low"
+
+    during_support_hours = [
+      {
+      type    = "constant"
+      urgency = "high"
+    }]
+    outside_support_hours = [
+      {
+      type    = "constant"
+      urgency = "low"
+    }]
+  }]
+
+  // Support Hours
+  support_hours = [
+    {
+      type         = "fixed_time_per_day"
+      time_zone    = "America/Lima"
+      days_of_week = [1, 2, 3, 4, 5]
+      start_time   = "05:00:00"
+      end_time     = "16:00:00"
+    }
+  ]
+
   // Service Integration
   enable_service_integration = true
   vendor_name                = "CloudWatch"
@@ -65,6 +93,37 @@ inputs = {
   create_sns_topic = true
   service_name     = "AcmeCorp-Elasticsearch"
 }
+```
+## Terragrunt Example w/CloudWatch & SNS Integration + Incident Urgency Rules + Support Hours + Maintenance Windows
+```
+terraform {
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.0"
+}
+
+inputs = {
+  // PagerDuty Service
+  name              = "My Critical Service"
+  description       = "Service for all prod services."
+  escalation_policy = "My Escalation Policy Name"
+  alert_creation    = "create_alerts_and_incidents"
+  resolve_timeout   = 14400
+  ack_timeout       = 600
+  token             = local.pagerduty_key.key
+
+  // Maintenance Windows
+  enable_maintenance_windows = true
+  maintenance_windows = [
+    {
+      description = "Overnight Maintenance"
+      start_time  = "2022-11-09T20:00:00-05:00"
+      end_time    = "2022-11-09T22:00:00-05:00"
+    },
+    {
+      description = "Weekend Maintenance"
+      start_time  = "2022-12-09T20:00:00-05:00"
+      end_time    = "2022-12-09T22:00:00-05:00"
+    }
+  ]
 
   // Incident Urgency Rules
   incident_urgency_rule = [{
@@ -93,24 +152,6 @@ inputs = {
       end_time     = "16:00:00"
     }
   ]
-}
-```
-## Terragrunt Example w/CloudWatch & SNS Integration + Scheduled Actions
-
-```
-terraform {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.0"
-}
-
-inputs = {
-  // PagerDuty Service
-  name              = "My Critical Service"
-  description       = "Service for all prod services."
-  escalation_policy = "My Escalation Policy Name"
-  alert_creation    = "create_alerts_and_incidents"
-  resolve_timeout   = 14400
-  ack_timeout       = 600
-  token             = local.pagerduty_key.key
 
   // Service Integration
   enable_service_integration = true
@@ -119,19 +160,9 @@ inputs = {
   // SNS Topic
   create_sns_topic = true
   service_name     = "AcmeCorp-Elasticsearch"
-
-  // Scheduled Actions
-  scheduled_actions = [{
-    type       = "urgency_change"
-    to_urgency = "high"
-    at = [{
-      type = "named_time"
-      name = "support_hours_start"
-    }]
-  }]
 }
 ```
-## Terragrunt Example w/CloudWatch & SNS Integration + Maintenance Windows
+## Terragrunt Example w/CloudWatch & SNS Integration + Incident Urgency Rules + Support Hours + Maintenance Windows + Slack Extension
 ```
 terraform {
   source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.0"
@@ -162,55 +193,33 @@ inputs = {
     }
   ]
 
-  // Service Integration
-  enable_service_integration = true
-  vendor_name                = "CloudWatch"
+  // Incident Urgency Rules
+  incident_urgency_rule = [{
+    type    = "constant"
+    urgency = "low"
 
-  // SNS Topic
-  create_sns_topic = true
-  service_name     = "AcmeCorp-Elasticsearch"
-}
-```
-## Complete Terragrunt Example w/CloudWatch & SNS Integration + Maintenance Windows + Scheduled Actions + Slack Extension
-```
-terraform {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.0"
-}
-
-inputs = {
-  // PagerDuty Service
-  name              = "My Critical Service"
-  description       = "Service for all prod services."
-  escalation_policy = "My Escalation Policy Name"
-  alert_creation    = "create_alerts_and_incidents"
-  resolve_timeout   = 14400
-  ack_timeout       = 600
-  token             = local.pagerduty_key.key
-
-  // Maintenance Windows
-  enable_maintenance_windows = true
-  maintenance_windows = [
-    {
-      description = "Overnight Maintenance"
-      start_time  = "2022-11-09T20:00:00-05:00"
-      end_time    = "2022-11-09T22:00:00-05:00"
-    },
-    {
-      description = "Weekend Maintenance"
-      start_time  = "2022-12-09T20:00:00-05:00"
-      end_time    = "2022-12-09T22:00:00-05:00"
-    }
-  ]
-
-  // Scheduled Actions
-  scheduled_actions = [{
-    type       = "urgency_change"
-    to_urgency = "high"
-    at = [{
-      type = "named_time"
-      name = "support_hours_start"
+    during_support_hours = [
+      {
+      type    = "constant"
+      urgency = "high"
+    }]
+    outside_support_hours = [
+      {
+      type    = "constant"
+      urgency = "low"
     }]
   }]
+
+  // Support Hours
+  support_hours = [
+    {
+      type         = "fixed_time_per_day"
+      time_zone    = "America/Lima"
+      days_of_week = [1, 2, 3, 4, 5]
+      start_time   = "05:00:00"
+      end_time     = "16:00:00"
+    }
+  ]
 
   // Service Integration
   enable_service_integration = true
