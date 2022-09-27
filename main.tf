@@ -93,7 +93,7 @@ resource "aws_sns_topic_subscription" "this" {
 
 }
 data "pagerduty_extension_schema" "this" {
-  count = var.create_slack_extension ? 1 : 0
+  count = var.create_extension ? 1 : 0
 
   name = var.schema_name
 }
