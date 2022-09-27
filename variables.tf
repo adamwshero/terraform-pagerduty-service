@@ -102,9 +102,15 @@ variable "enable_maintenance_windows" {
   default     = false
 }
 variable "maintenance_windows" {
-  type    = any
-  //   start_time  = "2015-11-09T20:00:00-05:00"
-  // end_time    = "2015-11-09T22:00:00-05:00"
+  description = "value"
+  type        = any
+  default = [
+    {
+      start_time  = string // (Required) The maintenance window's start time. This is when the services will stop creating incidents. If this date is in the past, it will be updated to be the current time.
+      end_time    = string // (Required) The maintenance window's end time. This is when the services will start creating incidents again. This date must be in the future and after the start_time.
+      services    = list(string)
+    }
+  ]
 }
 
 #############################

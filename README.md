@@ -10,22 +10,33 @@
 <br>
 # terraform-pagerduty-service
 
-Terraform module that creates:
-- Pagerduty Service w/optional Incident Urgency Rule
-- SNS Topic
-- Subscribes the Pagerduty service to the SNS topic
-- Creates a Slack extension to a specified Slack channel
-- Creates a CloudWatch integration
+Through its SaaS-based platform, PagerDuty empowers developers, DevOps, IT operations and business leaders to prevent and resolve business-impacting incidents for exceptional customer experience. When revenue and brand reputation depends on customer satisfaction, PagerDuty arms organizations with the insight to proactively manage events that may impact customers across their IT environment. With hundreds of native integrations, on-call scheduling and escalations, machine learning, business-wide response orchestration, analytics, and much more, PagerDuty gets the right data in the hands of the right people in real time, every time.
+<br>
+
+## Module Capabilities
+- Create a Pagerduty Service
+- Supports many maintenance windows
+- Optional Incident Urgency Rule
+- Optional Scheduled Actions
+- Optional SNS Topic for integration notifications
+- Ability to Subscribe the Pagerduty service to an SNS topic (if enabled)
+- Optional Slack extension to a specified Slack channel
+- Option to create a Service integration (e.g. CloudWatch, DataDog, etc.)
 
 [Pagerduty Service](https://support.pagerduty.com/docs/services-and-integrations) represents something you monitor (like a web service, email service, or database service). It is a container for related incidents that associates them with escalation policies.
 
 ## Examples
-
 Look at our complete [Terraform examples](latest/examples/terraform/) where you can get a better context of usage. The Terragrunt example can be viewed directly from GitHub.
+<br>
+
+## Assumptions
+  * You already have access to a PagerDuty API key to create the service.
+  * You have access to Slack to acquire the team, bot, and other information need for the extension to work.
+<br>
 
 ## Usage
-
 You can create a PagerDuty service that comes with its own SNS topic and a subcription to that topic. The module also creates the CloudWatch integration for you as well as a Slack extension for notifications to blast to your channel of choice.
+<br>
 
 ### Terraform Example
 ```

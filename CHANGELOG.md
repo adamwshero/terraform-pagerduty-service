@@ -1,18 +1,21 @@
-## 1.1.0 (September 26, 2022)
+## 1.1.0 (September 27, 2022)
 
 CHORE:
 * Updated pinned provider to 2.6.2
-* Simplified incident_urgency and scheduled actions map variables
 * Added outputs for Slack Extension
 * Added outputs for Service Integration
 
-FEATURE: (BREAKING CHANGES!)
-* Removed Extension configuration from module and into input block for more control.
+ENHANCEMENT: (BREAKING CHANGES!)
+* Simplified incident_urgency and scheduled actions map variables
+* Removed Extension configuration from module and into input block (templatefile) for more control.
 * Added option to disable/enable Slack extension
 * Added option to disable/enable Service integration
 * Added option to disable/enable SNS Topic
 * Removed hard-coded "CloudWatch" vendor integration. Allowed to be dynamic input now.
 * Renamed `shema_webhook` variable to `schema_name`
+
+FEATURE:
+* Support for one or many maintenance windows.
 
 ## 1.0.10 (June 6, 2022)
 
