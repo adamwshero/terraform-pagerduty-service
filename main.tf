@@ -112,7 +112,7 @@ resource "pagerduty_maintenance_window" "this" {
     for window in var.maintenance_windows : window.services => {
       start_time  = window.start_time
       end_time    = window.end_time
-      services    = [pagerduty_service.this.id]
+      services    = window.services
     }
     if var.enable_maintenance_windows == true
   }
