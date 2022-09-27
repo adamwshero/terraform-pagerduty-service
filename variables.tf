@@ -44,7 +44,7 @@ variable "incident_urgency_rule" {
   default = []
 }
 variable "urgency" {
-  type = "string"
+  type = string
 }
 variable "support_hours" {
   type = any
