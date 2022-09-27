@@ -24,7 +24,8 @@ resource "pagerduty_service" "this" {
     for_each = var.incident_urgency_rule
     content {
       type    = incident_urgency_rule.value["type"]
-      urgency = incident_urgency_rule.value["urgency"]
+      urgency = var.urgenc
+      # urgency = incident_urgency_rule.value["urgency"]
       dynamic "during_support_hours" {
         for_each = incident_urgency_rule.value.during_support_hours
         content {
