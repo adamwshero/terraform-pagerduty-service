@@ -44,15 +44,7 @@ variable "incident_urgency_rule" {
   default = []
 }
 variable "support_hours" {
-  type = set(object(
-    {
-      type         = string
-      start_time   = string
-      end_time     = string
-      days_of_week = list(number)
-      time_zone    = string
-    }
-  ))
+  type = any
   default = []
 }
 variable "scheduled_actions" {
@@ -116,10 +108,10 @@ variable "schema_name" {
   description = "(Required) The extension name to use to find an extension vendor in the PagerDuty API."
 }
 
-#############################
-# PagerDuty Slack Extension
-#############################
-variable "create_slack_extension" {
+######################
+# PagerDuty Extension
+######################
+variable "create_extension" {
   description = "Decide to create the Slack integration or not."
   type        = bool
   default     = false

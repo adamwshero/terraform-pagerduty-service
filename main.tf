@@ -98,7 +98,7 @@ data "pagerduty_extension_schema" "this" {
   name = var.schema_name
 }
 resource "pagerduty_extension" "this" {
-  count = var.create_slack_extension ? 1 : 0
+  count = var.create_extension ? 1 : 0
 
   name              = var.extension_name
   endpoint_url      = var.endpoint_url

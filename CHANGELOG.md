@@ -4,6 +4,9 @@ CHORE:
 * Updated pinned provider to 2.6.2
 * Added outputs for Slack Extension
 * Added outputs for Service Integration
+* Updated all examples
+* Added examples for many scenarios
+* Expanded README
 
 ENHANCEMENT: (BREAKING CHANGES!)
 * Simplified incident_urgency and scheduled actions map variables

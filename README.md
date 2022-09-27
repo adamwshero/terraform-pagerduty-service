@@ -10,7 +10,7 @@
 <br>
 # terraform-pagerduty-service
 
-Through its SaaS-based platform, PagerDuty empowers developers, DevOps, IT operations and business leaders to prevent and resolve business-impacting incidents for exceptional customer experience. When revenue and brand reputation depends on customer satisfaction, PagerDuty arms organizations with the insight to proactively manage events that may impact customers across their IT environment. With hundreds of native integrations, on-call scheduling and escalations, machine learning, business-wide response orchestration, analytics, and much more, PagerDuty gets the right data in the hands of the right people in real time, every time.
+[Pagerduty Service](https://support.pagerduty.com/docs/services-and-integrations) represents something you monitor (like a web service, email service, or database service). It is a container for related incidents that associates them with escalation policies. Through its SaaS-based platform, PagerDuty empowers developers, DevOps, IT operations and business leaders to prevent and resolve business-impacting incidents for exceptional customer experience. When revenue and brand reputation depends on customer satisfaction, PagerDuty arms organizations with the insight to proactively manage events that may impact customers across their IT environment. With hundreds of native integrations, on-call scheduling and escalations, machine learning, business-wide response orchestration, analytics, and much more, PagerDuty gets the right data in the hands of the right people in real time, every time.
 <br>
 
 ## Module Capabilities
@@ -22,11 +22,10 @@ Through its SaaS-based platform, PagerDuty empowers developers, DevOps, IT opera
 - Ability to Subscribe the Pagerduty service to an SNS topic (if enabled)
 - Optional Slack extension to a specified Slack channel
 - Option to create a Service integration (e.g. CloudWatch, DataDog, etc.)
-
-[Pagerduty Service](https://support.pagerduty.com/docs/services-and-integrations) represents something you monitor (like a web service, email service, or database service). It is a container for related incidents that associates them with escalation policies.
+<br>
 
 ## Examples
-Look at our complete [Terraform examples](latest/examples/terraform/) where you can get a better context of usage. The Terragrunt example can be viewed directly from GitHub.
+Look at our complete [Terraform examples](latest/examples/terraform/) where you can get a better context of usage for various scenarios. The Terragrunt example can be viewed directly from GitHub.
 <br>
 
 ## Assumptions
@@ -38,7 +37,28 @@ Look at our complete [Terraform examples](latest/examples/terraform/) where you 
 You can create a PagerDuty service that comes with its own SNS topic and a subcription to that topic. The module also creates the CloudWatch integration for you as well as a Slack extension for notifications to blast to your channel of choice.
 <br>
 
-### Terraform Example
+## Open Issues
+- PagerDuty is currently aware that the Slack extension must be manually authorized in the PagerDuty Service page to connect to a given Slack channel once the service is created. There is no ETA on this fix
+<br>
+
+## Special Notes
+* (Scheduled Actions)
+  * You cannot use both `scheduled_actions` and `incident_urgency_rule` together. You can only choose one method of escalation.
+  * A scheduled_actions block is required when using type = `use_support_hours` in incident_urgency_rule.
+
+* (Incident Urgency Rule)
+  * When using type = `use_support_hours` in `incident_urgency_rule` you must specify exactly one (otherwise optional) `support_hours` block. Your PagerDuty account must have the `service_support_hours` ability to assign support hours. The block contains the following arguments:
+  * Note that it is currently only possible to define the scheduled action when urgency is set to high for `during_support_hours` and to low for `outside_support_hours` in `incident_urgency_rule`.
+<br>
+
+## Upcoming Improvements
+* Re-introduce alarm grouping options.
+* Support many integrations and extensions.
+* Create resource to handle runbook names and URL's.
+* <s>Make module compatible with Terraform =>0.14.0</s>
+<br>
+
+### Terraform Basic Example
 ```
 module "pagerduty-service" {
   source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.0"
@@ -50,80 +70,11 @@ module "pagerduty-service" {
   alert_creation    = "create_alerts_and_incidents"
   resolve_timeout   = 14400
   ack_timeout       = 600
-  token             = file(./my_pagerduty_api_key.yaml)
-
-  incident_urgency_rule = [{
-    type    = "constant"
-    urgency = "low"
-
-    during_support_hours = [{
-      type    = "constant"
-      urgency = "low"
-    }]
-
-    outside_support_hours = [{
-      type    = "constant"
-      urgency = "low"
-    }]
-  }]
-
-  // SNS Topic
-  prefix       = "my-prefix"
-  service_name = "AcmeCorp-Elasticsearch"
-
-  // Slack Extension
-  create_slack_extension = true
-
-  extension_name     = "DevOps: Slack"
-  schema_webhook     = "Generic V1 Webhook"
-  config = templatefile("${path.module}/slack/config.json.tpl", {
-    app_id             = "A1AAAAAAA"
-    authed_user        = "A11AAA11AAA"
-    bot_user_id        = "A111AAAA11A"
-    slack_team_id      = "AAAAAA11A"
-    slack_team_name    = "AcmeCorp"
-    slack_channel      = "#devops-pagerduty"
-    slack_channel_id   = "A11AA1AAA1A"
-    configuration_url  = "https://acme-corp.slack.com/services/A111AAAAAAAA"
-    referer            = "https://acmecorp.pagerduty.com/services/A1AAAA1/integrations?service_profile=1"
-    notify_resolve     = true
-    notify_trigger     = true
-    notify_escalate    = true
-    notify_acknowledge = true
-    notify_assignments = true
-    notify_annotate    = true
-    high_urgency       = true
-    low_urgency        = true
-  })
+  token             = file("${path.module}/my_pagerduty_api_key.yaml")
 ```
 
-### Terragrunt Example
+### Terragrunt Basic Example
 ```
-locals {
-  external_deps = read_terragrunt_config(find_in_parent_folders("external-deps.hcl"))
-  account_vars  = read_terragrunt_config(find_in_parent_folders("account.hcl"))
-  product_vars  = read_terragrunt_config(find_in_parent_folders("product.hcl"))
-  env_vars      = read_terragrunt_config(find_in_parent_folders("env.hcl"))
-  product       = local.product_vars.locals.product_name
-  prefix        = local.product_vars.locals.prefix
-  account       = local.account_vars.locals.account_id
-  env           = local.env_vars.locals.env
-  pagerduty_key = yamldecode(sops_decrypt_file("${get_terragrunt_dir()}/sops/api-key.sops.yaml"))
-  tags = merge(
-    local.env_vars.locals.tags,
-    local.additional_tags
-  )
-
-  # Customize if needed
-  additional_tags = {
-
-  }
-}
-
-include {
-  path = find_in_parent_folders()
-}
-
 terraform {
   source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.0"
 }
@@ -137,50 +88,6 @@ inputs = {
   resolve_timeout   = 14400
   ack_timeout       = 600
   token             = local.pagerduty_key.key
-
-  incident_urgency_rule = [{
-    type    = "constant"
-    urgency = "low"
-
-    during_support_hours = [{
-      type    = "constant"
-      urgency = "low"
-    }]
-
-    outside_support_hours = [{
-      type    = "constant"
-      urgency = "low"
-    }]
-  }]
-
-  // SNS Topic
-  prefix       = "my-prefix"
-  service_name = "AcmeCorp-Elasticsearch"
-
-  // Slack Extension
-  create_slack_extension = true
-
-  extension_name     = "DevOps: Slack"
-  schema_webhook     = "Generic V1 Webhook"
-  config = templatefile("${get_terragrunt_dir()}/slack/config.json.tpl", {
-    app_id             = "A1AAAAAAA"
-    authed_user        = "A11AAA11AAA"
-    bot_user_id        = "A111AAAA11A"
-    slack_team_id      = "AAAAAA11A"
-    slack_team_name    = "AcmeCorp"
-    slack_channel      = "#devops-pagerduty"
-    slack_channel_id   = "A11AA1AAA1A"
-    configuration_url  = "https://acme-corp.slack.com/services/A111AAAAAAAA"
-    referer            = "https://acmecorp.pagerduty.com/services/A1AAAA1/integrations?service_profile=1"
-    notify_resolve     = true
-    notify_trigger     = true
-    notify_escalate    = true
-    notify_acknowledge = true
-    notify_assignments = true
-    notify_annotate    = true
-    high_urgency       = true
-    low_urgency        = true
-  })
 }
 ```
 
@@ -200,54 +107,64 @@ inputs = {
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 2.67.0 |
 | <a name="provider_pagerduty"></a> [pagerduty](#provider\_pagerduty) | >= 1.9.6 |
 
-
 ## Resources
 
-| Name | Type |
-|------|------|
-| [pagerduty_service.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/resources/service) | resource |
-| [pagerduty_extension.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/resources/extension) | resource |
-| [pagerduty_service_integration.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/data-sources/service_integration) | resource |
-| [pagerduty_vendor.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/data-sources/vendor) | resource |
-| [aws_sns_topic.rsm](https://registry.terraform.io/providers/aaronfeng/aws/latest/docs/resources/sns_topic) | resource |
-<br>
+| Name                                                                                                                                             | Type     |
+|------------------------------------------------------------------------------------------------------------------------------------------------- | ---------|
+| [pagerduty_service.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/resources/service)                               | resource |
+| [pagerduty_extension.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/resources/extension)                           | resource |
+| [pagerduty_service_integration.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/data-sources/service_integration)    | resource |
+| [pagerduty_service_maintenance_window.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/resources/maintenance_window) | resource |
+| [aws_sns_topic.rsm](https://registry.terraform.io/providers/aaronfeng/aws/latest/docs/resources/sns_topic)                                       | resource |
+| [aws_sns_topic_subscription.rsm](https://registry.terraform.io/providers/aaronfeng/aws/latest/docs/resources/sns_topic_subscription)             | resource |
+
+## Data Sources
+| Name                                                                                                                                    | Type     |
+|---------------------------------------------------------------------------------------------------------------------------------------- | ---------|
+| [pagerduty_escalation_policy.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/resources/escalation_policy)  | resource |
+| [pagerduty_vendor.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/data-sources/vendor)                     | resource |
+| [pagerduty_extension_schema.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/data-sources/extension_schema) | resource |
 
 ## Available Inputs
 
 | Name                  | Resource            | Variable                | Data Type     | Default                         | Required? |
 | --------------------- | --------------------|------------------------ | ------------- | ------------------------------- | ----------|
 | Service Name          | pagerduty_service   | `name`                  | `string`      | `DevOps: Test Service`          | No        |
-| Escalation Policy     | pagerduty_service   | `escalation_policy`     | `string`      | `""`                            | Yes       |
-| Description           | pagerduty_service   | `description `          | `string`      | `""`                            | No        |
+| Escalation Policy     | pagerduty_service   | `escalation_policy`     | `string`      | `null`                          | Yes       |
+| Description           | pagerduty_service   | `description `          | `string`      | `null`                          | No        |
 | Resolve Timeout       | pagerduty_service   | `resolve_timeout`       | `number`      | `14400`                         | No        | 
 | Acknowledge Timeout   | pagerduty_service   | `ack_timeout`           | `number`      | `600`                           | No        |
 | Alert Creation        | pagerduty_service   | `alert_creation`        | `string`      | `"create_alerts_and_incidents"` | Yes       |
-| Escalation Policy     | pagerduty_service   | `escalation_policy`     | `string`      | `""`                            | Yes       |
-| Incident Urgency Rule | pagerduty_service   | `incident_urgency_rule` | `set(object)` | `[]`                            | No        |
-| Support Hours         | pagerduty_service   | `escalation_policy`     | `set(object)` | `[]`                            | No        |
-| Scheduled Actions     | pagerduty_service   | `escalation_policy`     | `set(object)` | `[]`                            | No        |
-| Prefix                | aws_sns_topic       | `prefix`                | `string`      | `""`                            | No        |
-| Name                  | aws_sns_topic       | `name`                  | `string`      | `""`                            | Yes       |
-| App Id                | pagerduty_extension | `app_id`                | `string`      | `""`                            | Yes       |
-| Authorized User       | pagerduty_extension | `authed_user`           | `string`      | `""`                            | No        |
-| Bot UserId            | pagerduty_extension | `bot_user_id`           | `string`      | `""`                            | Yes       |
-| Channel               | pagerduty_extension | `slack_channel`         | `string`      | `""`                            | Yes       |
-| Channel Id            | pagerduty_extension | `slack_channel_id`      | `string`      | `""`                            | Yes       |
-| Configuration URL     | pagerduty_extension | `configuration_url`     | `string`      | `""`                            | Yes       | 
-| Webhook URL           | pagerduty_extension | `url`                   | `string`      | `""`                            | Yes       |
+| Escalation Policy     | pagerduty_service   | `escalation_policy`     | `string`      | `null`                          | Yes       |
+| Incident Urgency Rule | pagerduty_service   | `incident_urgency_rule` | `any`         | `[]`                            | No        |
+| Support Hours         | pagerduty_service   | `support_hours`         | `set(object)` | `[]`                            | No        |
+| Scheduled Actions     | pagerduty_service   | `scheduled_actions`     | `any`         | `[]`                            | No        |
+| Vendor Name           | pagerduty_service_integration | `vendor_name` | `string`       | `null`                         | No        |
+| Prefix                | aws_sns_topic       | `prefix`                | `string`      | `null`                          | No        |
+| Name                  | aws_sns_topic       | `name`                  | `string`      | `null`                          | Yes       |
+| Schema Name           | pagerduty_extension_schema | `schema_name`    | `string`      | `null`                          | Yes       |
+| Create Extension      | pagerduty_extension | `create_extention`      | `bool`        | `false`                         | No        |
+| Extension Name        | pagerduty_extension | `extention_name`        | `string`      | `null`                          | Yes       |
+| Endpoint URL          | pagerduty_extension | `endpoint_url`          | `string`      | `null`                          | Yes       |
+| App Id                | pagerduty_extension | `app_id`                | `string`      | `null`                          | Yes       |
+| Authorized User       | pagerduty_extension | `authed_user`           | `string`      | `null`                          | No        |
+| Bot UserId            | pagerduty_extension | `bot_user_id`           | `string`      | `null`                          | Yes       |
+| Channel               | pagerduty_extension | `slack_channel`         | `string`      | `null`                          | Yes       |
+| Channel Id            | pagerduty_extension | `slack_channel_id`      | `string`      | `null`                          | Yes       |
+| Configuration URL     | pagerduty_extension | `configuration_url`     | `string`      | `null`                          | Yes       | 
+| Webhook URL           | pagerduty_extension | `url`                   | `string`      | `null`                          | Yes       |
 | Notify on Resolve     | pagerduty_extension | `notify_resolve`        | `bool`        | `"true"`                        | No        |
 | Notify on Trigger     | pagerduty_extension | `notify_trigger`        | `bool`        | `"true"`                        | No        |
 | Notify on Escalate    | pagerduty_extension | `notify_escalate`       | `bool`        | `"true"`                        | No        |
 | Notify on Acknowledge | pagerduty_extension | `notify_acknowledge`    | `bool`        | `"true"`                        | No        |
 | Notify on Assignment  | pagerduty_extension | `notify_assignments`    | `bool`        | `"true"`                        | No        |
 | Notify on Annotate    | pagerduty_extension | `notify_annotate`       | `bool`        | `"true"`                        | No        |
-| Referer URL           | pagerduty_extension | `referer`               | `string`      | `""`                            | Yes       |
-| Team Id               | pagerduty_extension | `slack_team_id`         | `string`      | `""`                            | Yes       |
-| Team Name             | pagerduty_extension | `slack_team_name`       | `string`      | `""`                            | Yes       |
+| Referer URL           | pagerduty_extension | `referer`               | `string`      | `null`                          | Yes       |
+| Team Id               | pagerduty_extension | `slack_team_id`         | `string`      | `null`                          | Yes       |
+| Team Name             | pagerduty_extension | `slack_team_name`       | `string`      | `null`                          | Yes       |
 | Alert on High Urgency | pagerduty_extension | `high_urgency`          | `bool`        | `"true"`                        | No        |
 | Alert on High Urgency | pagerduty_extension | `low_urgency`           | `bool`        | `"true"`                        | No        |
-
-<br>
+| Maintenance Windows   | pagerduty_maintenance_window | `maintenance_windows` | `any`  | `[]`                            | No        |
 
 ## Predetermined Inputs
 
@@ -256,30 +173,23 @@ inputs = {
 | Name          | pagerduty_service_integration | `name`        | `string`  | `data.pagerduty_vendor.this.name`      | Yes       |
 | Service       | pagerduty_service_integration | `service`     | `string`  | `pagerduty_service.this.id`            | Yes       |
 | Vendor        | pagerduty_service_integration | `vendor`      | `string`  | `data.pagerduty_vendor.this.id`        | Yes       |
-| Type          | pagerduty_service_integration | `type`        | `string`  | `"aws_cloudwatch_inbound_integration"` | Yes       |
-| Vendor Name   | pagerduty_vendor              | `name`        | `string`  | `"CloudWatch"`                         | Yes       |
-
-<br>
+| Service       | pagerduty_maintenance_window  | `service`     | `string`  | `pagerduty_service.this.id`            | Yes       |
 
 ## Outputs
 
-| Name                                     | Description                            |
-|------------------------------------------|--------------------------------------- | 
-
+| Name                              | Description                                                       |
+|---------------------------------- | ----------------------------------------------------------------- | 
+| pagerduty_service_name            | The name of the PagerDuty service.                                |
+| pagerduty_service_id              | Id of PagerDuty Service.                                          |
+| pagerduty_service_url             | The URL of the PagerDuty service.                                 |
+| pagerduty_service_integration_id  | Id of the integration with PagerDuty.                             |
+| pagerduty_service_integration_key | Key of the integration with PagerDuty.                            |
+| sns_service_topic                 | The name of the SNS topic that you can send CloudWatch alarms to. |
+| sns_topic_arn                     | The Arn of the SNS topic that you can send CloudWatch alarms to.  |
+| sns_subscription_url              | Subscription URL for SNS.                                         |
+| slack_extension_id                | The Id of the Slack extension.                                    |
+| slack_extension_url               | URL at which the entity is uniquely displayed in the Web app.     |
 
 ## PagerDuty/Slack Extension Schema
  * https://developer.pagerduty.com/api-reference/YXBpOjExMjA5NTQ0-pager-duty-slack-integration-api (See /slack_schema.json)
  * https://developer.pagerduty.com/api-reference/b3A6Mjc0ODEzMg-list-extensions
-<br>
-
-## To-Do:
-* Re-introduce alarm grouping options
-* Create resource to handle runbook names and URL's.
-* Create resource to handle service dependencies.
-* Create CloudWatch metric alarm. (maybe)
-* <s>Make module compatible with Terraform =>0.14.0</s>
-<br>
-
-## Known Issues
-- PagerDuty is currently aware that the Slack extension must be manually authorized to connect to a given Slack channel once the service is created. There is no ETA on this fix.
-
