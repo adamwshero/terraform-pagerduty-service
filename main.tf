@@ -108,7 +108,7 @@ resource "pagerduty_extension" "this" {
 }
 
 resource "pagerduty_maintenance_window" "this" {
-  for_each = var.maintenance_windows != null && var.enable_maintenance_windows == true ? [true] : []
+  for_each = var.maintenance_windows != null ? [true] : []
 
   start_time  = each.value.start_time
   end_time    = each.value.end_time
