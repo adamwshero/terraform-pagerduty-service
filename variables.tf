@@ -108,7 +108,8 @@ variable "maintenance_windows" {
     {
       start_time  = string // (Required) The maintenance window's start time. This is when the services will stop creating incidents. If this date is in the past, it will be updated to be the current time.
       end_time    = string // (Required) The maintenance window's end time. This is when the services will start creating incidents again. This date must be in the future and after the start_time.
-      services    = list(string)
+      description = string // (Optional) A description for the maintenance window.
+      services    = list(string) // (Required) A list of service IDs to include in the maintenance window.
     }
   ]
 }

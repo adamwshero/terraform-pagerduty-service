@@ -111,7 +111,8 @@ resource "pagerduty_maintenance_window" "this" {
   for_each = {
     for k,v in var.maintenance_windows : k => v if var.enable_maintenance_windows == true
   }
-    start_time = each.value.start_time
-    end_time = each.value.end_time
-    services = [pagerduty_service.this.id]
+    start_time  = each.value.start_time
+    end_time    = each.value.end_time
+    description = each.value.description
+    services    = [pagerduty_service.this.id]
 }
