@@ -25,6 +25,32 @@ module "pagerduty-service" {
     }
   ]
 
+   // Incident Urgency Rules
+  incident_urgency_rule = [{
+    type    = "constant"
+    urgency = "low"
+
+    during_support_hours = [{
+      type    = "constant"
+      urgency = "high"
+    }]
+    outside_support_hours = [{
+      type    = "constant"
+      urgency = "low"
+    }]
+  }]
+
+  // Support Hours
+  support_hours = [
+    {
+      type = "fixed_time_per_day"
+      time_zone = "America/Lima"
+      days_of_week = [1, 2, 3, 4, 5]
+      start_time  = "05:00:00"
+      end_time    = "16:00:00"
+    }
+  ]
+
   // Scheduled Actions
   scheduled_actions = [{
     type       = "urgency_change"

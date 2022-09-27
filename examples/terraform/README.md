@@ -34,7 +34,7 @@ module "pagerduty-service" {
   service_name     = "AcmeCorp-Elasticsearch"
 }
 ```
-## Terraform Example w/CloudWatch & SNS Integration + Incident Urgency Rules
+## Terraform Example w/CloudWatch & SNS Integration + Incident Urgency Rules + Support Hours
 
 ```
 module "pagerduty-service" {
@@ -57,23 +57,36 @@ module "pagerduty-service" {
   service_name     = "AcmeCorp-Elasticsearch"
 }
 
+  // Incident Urgency Rules
   incident_urgency_rule = [{
     type    = "constant"
     urgency = "low"
 
-    during_support_hours = [{
+    during_support_hours = [
+      {
       type    = "constant"
-      urgency = "low"
+      urgency = "high"
     }]
-
-    outside_support_hours = [{
+    outside_support_hours = [
+      {
       type    = "constant"
       urgency = "low"
     }]
   }]
+
+  // Support Hours
+  support_hours = [
+    {
+      type         = "fixed_time_per_day"
+      time_zone    = "America/Lima"
+      days_of_week = [1, 2, 3, 4, 5]
+      start_time   = "05:00:00"
+      end_time     = "16:00:00"
+    }
+  ]
 }
 ```
-## Terraform Example w/CloudWatch & SNS Integration + Scheduled Actions
+## Terraform Example w/CloudWatch & SNS Integration + Scheduled Actions + Support Hours + Incident Urgency Rules
 
 ```
 module "pagerduty-service" {
@@ -94,6 +107,33 @@ module "pagerduty-service" {
   // SNS Topic
   create_sns_topic = true
   service_name     = "AcmeCorp-Elasticsearch"
+
+  // Incident Urgency Rules
+  incident_urgency_rule = [{
+    type    = "use_support_hours"
+
+    during_support_hours = [
+      {
+      type    = "constant"
+      urgency = "high"
+    }]
+    outside_support_hours = [
+      {
+      type    = "constant"
+      urgency = "low"
+    }]
+  }]
+
+  // Support Hours
+  support_hours = [
+    {
+      type         = "fixed_time_per_day"
+      time_zone    = "America/Lima"
+      days_of_week = [1, 2, 3, 4, 5]
+      start_time   = "05:00:00"
+      end_time     = "16:00:00"
+    }
+  ]
 
   // Scheduled Actions
   scheduled_actions = [{
@@ -168,6 +208,33 @@ module "pagerduty-service" {
       description = "Weekend Maintenance"
       start_time  = "2022-12-09T20:00:00-05:00"
       end_time    = "2022-12-09T22:00:00-05:00"
+    }
+  ]
+
+  // Incident Urgency Rules
+  incident_urgency_rule = [{
+    type    = "use_support_hours"
+
+    during_support_hours = [
+      {
+      type    = "constant"
+      urgency = "high"
+    }]
+    outside_support_hours = [
+      {
+      type    = "constant"
+      urgency = "low"
+    }]
+  }]
+
+  // Support Hours
+  support_hours = [
+    {
+      type         = "fixed_time_per_day"
+      time_zone    = "America/Lima"
+      days_of_week = [1, 2, 3, 4, 5]
+      start_time   = "05:00:00"
+      end_time     = "16:00:00"
     }
   ]
 

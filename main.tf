@@ -22,6 +22,7 @@ resource "pagerduty_service" "this" {
   alert_creation          = var.alert_creation
   dynamic "incident_urgency_rule" {
     for_each = var.incident_urgency_rule
+    iterator = incident_urgency_rule
     content {
       type    = incident_urgency_rule.value["type"]
       urgency = incident_urgency_rule.value["urgency"]

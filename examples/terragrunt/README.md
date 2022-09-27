@@ -40,7 +40,7 @@ inputs = {
   service_name     = "AcmeCorp-Elasticsearch"
 }
 ```
-## Terragrunt Example w/CloudWatch & SNS Integration + Incident Urgency Rules
+## Terragrunt Example w/CloudWatch & SNS Integration + Incident Urgency Rules + Support Hours
 
 ```
 terraform {
@@ -66,20 +66,33 @@ inputs = {
   service_name     = "AcmeCorp-Elasticsearch"
 }
 
+  // Incident Urgency Rules
   incident_urgency_rule = [{
     type    = "constant"
     urgency = "low"
 
-    during_support_hours = [{
+    during_support_hours = [
+      {
       type    = "constant"
-      urgency = "low"
+      urgency = "high"
     }]
-
-    outside_support_hours = [{
+    outside_support_hours = [
+      {
       type    = "constant"
       urgency = "low"
     }]
   }]
+
+  // Support Hours
+  support_hours = [
+    {
+      type         = "fixed_time_per_day"
+      time_zone    = "America/Lima"
+      days_of_week = [1, 2, 3, 4, 5]
+      start_time   = "05:00:00"
+      end_time     = "16:00:00"
+    }
+  ]
 }
 ```
 ## Terragrunt Example w/CloudWatch & SNS Integration + Scheduled Actions
@@ -158,7 +171,7 @@ inputs = {
   service_name     = "AcmeCorp-Elasticsearch"
 }
 ```
-## Complete Terragrunt Example w/CloudWatch & SNS Integration + Maintenance Windows + Scheduled Actions || Incident Urgency Rules (NOT BOTH) + Slack Extension
+## Complete Terragrunt Example w/CloudWatch & SNS Integration + Maintenance Windows + Scheduled Actions + Slack Extension
 ```
 terraform {
   source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.0"
