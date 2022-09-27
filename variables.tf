@@ -63,6 +63,16 @@ variable "scheduled_actions" {
 #################################
 # PagerDuty Service Integration
 #################################
+variable "enable_service_integration" {
+  description = "Decide to create a service integration or not (e.g. `Cloudwatch`, `DataDog`)"
+  type        = bool
+  default     = false
+}
+variable "vendor_name" {
+  description = "(Required) The vendor name to use to find a vendor in the PagerDuty API."
+  type        = string
+  default     = null
+}
 variable "type" {
   type        = string
   default     = "aws_cloudwatch_inbound_integration"
@@ -72,12 +82,6 @@ variable "type" {
 #############################
 # AWS SNS Topic
 #############################
-variable "prefix" {
-  type        = string
-  default     = null
-  description = "Default prefix for all PagerDuty subscribed SNS topics"
-}
-
 variable "service_name" {
   type        = string
   default     = null
@@ -87,10 +91,10 @@ variable "service_name" {
 #############################
 # PagerDuty Extension Schema
 #############################
-variable "schema_webhook" {
+variable "schema_name" {
   type        = string
   default     = null
-  description = "(Required|Optional) The url of the extension. Note: The endpoint URL is Optional API wise in most cases. But in some cases it is a Required parameter. For example, pagerduty_extension_schema named Generic V2 Webhook doesn't accept pagerduty_extension with no endpoint_url, but one with named Slack accepts."
+  description = "(Required) The extension name to use to find an extension vendor in the PagerDuty API."
 }
 
 #############################
@@ -144,7 +148,7 @@ variable "configuration_url" {
 variable "endpoint_url" {
   type        = string
   default     = null
-  description = "(Required) The url that the webhook payload will be sent to for this Extension. (e.g. https://hooks.slack.com/services/A1AAAA11A/A11AAAAAAAA/AaAAaAaAAaaAaAAaaAAAA1AA)"
+  description = "(Required|Optional) The url of the extension. Note: The endpoint URL is Optional API wise in most cases. But in some cases it is a Required parameter. For example, pagerduty_extension_schema named Generic V2 Webhook doesn't accept pagerduty_extension with no endpoint_url, but one with named Slack accepts. (e.g. https://hooks.slack.com/services/A1AAAA11A/A11AAAAAAAA/AaAAaAaAAaaAaAAaaAAAA1AA)"
 }
 variable "notify_resolve" {
   type        = bool

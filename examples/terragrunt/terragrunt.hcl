@@ -1,38 +1,53 @@
 locals {
-  aws_region               = "us-east-1"
-  account_id               = "123456879"
-  environment              = "dev"
-  tf_state_bucket_name     = "${local.org_prefix}-tfstate-${local.project}"
-  tf_state_key_prefix      = "tf-state-${local.project}"
-  tf_state_lock_table_name = "tf-state-${local.project}-locks"
-  org_prefix               = "acmecorp"
-  org_tld                  = "acmecorp.com"
-
+  account     = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
+  region      = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
+  environment = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
+  pagerduty_key = yamldecode("${get_terragrunt_dir()}/pagerduty-api-key.yaml")
 }
 
-## WS provider block
-generate "provider" {
-  path      = "provider.tf"
-  if_exists = "overwrite_terragrunt"
-  contents  = <<PROVIDER
-provider "aws" {
-  region = "${local.aws_region}"
-  allowed_account_ids = ["${local.account_id}"]
-}
-PROVIDER
+include {
+  path = find_in_parent_folders()
 }
 
-remote_state {
-  backend = "s3"
-  config = {
-    bucket         = local.tf_state_bucket_name
-    key            = "${path_relative_to_include()}/terraform.tfstate"
-    region         = local.aws_region
-    dynamodb_table = local.tf_state_lock_table_name
-    encrypt        = true
-  }
-  generate = {
-    path      = "backend.tf"
-    if_exists = "overwrite_terragrunt"
-  }
+terraform {
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.0"
+}
+
+inputs = {
+  // PagerDuty Service
+  name              = "DevOps: My-Critical-Service"
+  escalation_policy = "Escalation: DevOps Engineering"
+  resolve_timeout   = 14400
+  ack_timeout       = 600
+  alert_creation    = "create_alerts_and_incidents"
+  token             = local.pagerduty_key.key
+
+  // SNS Topic
+  prefix       = "my-prefix"
+  service_name = "AcmeCorp-Elasticsearch"
+  
+  // Slack Extension
+  create_slack_extension = true
+
+  extension_name  = "DevOps: Slack"
+  schema_name     = "Generic V1 Webhook" // Can use "Slack V2" or some other compatible Generic webhook.
+  config = templatefile("${get_terragrunt_dir()}/slack/config.json.tpl", {
+    app_id             = "A1AAAAAAA"
+    authed_user        = "A11AAA11AAA"
+    bot_user_id        = "A111AAAA11A"
+    slack_team_id      = "AAAAAA11A"
+    slack_team_name    = "AcmeCorp"
+    slack_channel      = "#devops-pagerduty"
+    slack_channel_id   = "A11AA1AAA1A"
+    configuration_url  = "https://acme-corp.slack.com/services/A111AAAAAAAA"
+    referer            = "https://acmecorp.pagerduty.com/services/A1AAAA1/integrations?service_profile=1"
+    notify_resolve     = true
+    notify_trigger     = true
+    notify_escalate    = true
+    notify_acknowledge = true
+    notify_assignments = true
+    notify_annotate    = true
+    high_urgency       = true
+    low_urgency        = true
+  })
 }

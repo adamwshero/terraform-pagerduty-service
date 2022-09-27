@@ -10,12 +10,9 @@ provider "pagerduty" {
   token = var.token
 }
 
-//  PagerDuty Service
-
 data "pagerduty_escalation_policy" "this" {
   name = var.escalation_policy
 }
-
 resource "pagerduty_service" "this" {
   name                    = var.name
   description             = var.description
@@ -69,44 +66,37 @@ resource "pagerduty_service" "this" {
     }
   }
 }
-
-//  PagerDuty CloudWatch Integration
-
 data "pagerduty_vendor" "this" {
-  name = "CloudWatch"
+  name = var.vendor_name
 }
 
 resource "pagerduty_service_integration" "this" {
-  name    = data.pagerduty_vendor.this.name
-  service = pagerduty_service.this.id
+  count = var.enable_service_integration ? 1 : 0
+
+  name    = data.pagerduty_vendor.this.name  
   vendor  = data.pagerduty_vendor.this.id
+  service = pagerduty_service.this[0].id
   # type    = (do not use for Datadog or Cloudwatch "vendor" integrations..only for generic service integrations)
 }
-
-//  SNS Topic For PagerDuty
-
 resource "aws_sns_topic" "this" {
-  name = "${var.prefix}-${var.service_name}"
+  count = var.create_sns_topic ? 1 : 0
+
+  name = var.service_name
 }
-
-//  SNS/PagerDuty Topic Subscription
-
 resource "aws_sns_topic_subscription" "this" {
-  topic_arn              = aws_sns_topic.this.arn
+  count = var.create_sns_topic ? 1 : 0
+
+  topic_arn              = aws_sns_topic.this[0].arn
   protocol               = "https"
   endpoint_auto_confirms = true #required or the subscription won't auto-confirm
-  endpoint               = "https://events.pagerduty.com/integration/${pagerduty_service_integration.this.integration_key}/enqueue"
+  endpoint               = "https://events.pagerduty.com/integration/${pagerduty_service_integration.this[0].integration_key}/enqueue"
 
 }
-
-//  PagerDuty Slack Extension
-
 data "pagerduty_extension_schema" "this" {
   count = var.create_slack_extension ? 1 : 0
 
-  name = var.schema_webhook
+  name = var.schema_name
 }
-
 resource "pagerduty_extension" "this" {
   count = var.create_slack_extension ? 1 : 0
 
