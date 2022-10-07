@@ -128,7 +128,7 @@ resource "pagerduty_slack_connection" "service_reference" {
   notification_type = var.notification_type
   config {
     events     = var.events
-    priorities = [data.pagerduty_priority.p1.id]
+    priorities = var.priorities
     urgency    = var.urgency
   }
 }
