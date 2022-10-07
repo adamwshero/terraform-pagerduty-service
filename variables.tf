@@ -262,8 +262,7 @@ variable "events" {
 
 variable "priorities" {
   description = "(Optional) Allows you to filter events by priority. Needs to be an array of PagerDuty priority IDs. Available through pagerduty_priority data source. When omitted or set to an empty array (`[]`) in the configuration for a Slack Connection, its default behaviour is to set `priorities` to `No Priority` value. When set to `[" * "]` its corresponding value for `priorities` in Slack Connection's configuration will be `Any Priority`."
-  type        = any
-  default     = []
+  type        = list(string)
 }
 
 variable "urgency" {
