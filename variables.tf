@@ -96,7 +96,7 @@ variable "enable_maintenance_windows" {
 variable "maintenance_windows" {
   description = "value"
   type        = any
-  default = []
+  default     = []
 }
 
 #############################
@@ -215,4 +215,60 @@ variable "low_urgency" {
   type        = bool
   default     = "true"
   description = "(Required) Alerts Slack on low urgency incidents."
+}
+
+#############################
+# PagerDuty Slack Connection
+#############################
+variable "create_slack_connection" {
+  description = "Decide to create the Slack connection or not."
+  type        = bool
+  default     = false
+}
+
+variable "source_id" {
+  description = "(Required) The ID of the source in PagerDuty. Valid `sources` are services or `teams`."
+  type        = string
+  default     = null
+}
+
+variable "source_type" {
+  description = "(Required) The type of the source. Either `team_reference` or `service_reference`."
+  type        = string
+  default     = null
+}
+
+variable "workspace_id" {
+  description = "(Required) The ID of the connected Slack workspace. Can also be defined by the `SLACK_CONNECTION_WORKSPACE_ID` environment variable."
+  type        = string
+  default     = null
+}
+
+variable "channel_id" {
+  description = "(Required) The ID of a Slack channel in the workspace."
+  type        = string
+  default     = null
+}
+
+variable "notification_type" {
+  description = "(Required) Type of notification. Either `responder` or `stakeholder`."
+  type        = string
+  default     = null
+}
+variable "events" {
+  description = "(Required) A list of strings to filter events by PagerDuty event type. `incident.triggered` is required. The follow event types are also possible:."
+  type        = any
+}
+
+variable "priorities" {
+  description = "(Optional) Allows you to filter events by priority. Needs to be an array of PagerDuty priority IDs. Available through pagerduty_priority data source. When omitted or set to an empty array (`[]`) in the configuration for a Slack Connection, its default behaviour is to set `priorities` to `No Priority` value. When set to `[" * "]` its corresponding value for `priorities` in Slack Connection's configuration will be `Any Priority`."
+  type        = any
+  default     = []
+}
+
+variable "urgency" {
+  description = "(Optional) Allows you to filter events by urgency. Either high or low."
+  type        = string
+  default     = null
+  
 }

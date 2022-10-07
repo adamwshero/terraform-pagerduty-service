@@ -74,7 +74,7 @@ data "pagerduty_vendor" "this" {
 resource "pagerduty_service_integration" "this" {
   count = var.enable_service_integration ? 1 : 0
 
-  name    = data.pagerduty_vendor.this.name  
+  name    = data.pagerduty_vendor.this.name
   vendor  = data.pagerduty_vendor.this.id
   service = pagerduty_service.this.id
   # type    = (do not use for Datadog or Cloudwatch "vendor" integrations..only for generic service integrations)
@@ -105,15 +105,45 @@ resource "pagerduty_extension" "this" {
   endpoint_url      = var.endpoint_url
   extension_schema  = data.pagerduty_extension_schema.this[count.index].id
   extension_objects = [pagerduty_service.this.id]
-  config = var.config
+  config            = var.config
 }
 
 resource "pagerduty_maintenance_window" "this" {
   for_each = {
-    for k,v in var.maintenance_windows : k => v if var.enable_maintenance_windows == true
+    for k, v in var.maintenance_windows : k => v if var.enable_maintenance_windows == true
   }
-    start_time  = each.value.start_time
-    end_time    = each.value.end_time
-    description = each.value.description
-    services    = [pagerduty_service.this.id]
+  start_time  = each.value.start_time
+  end_time    = each.value.end_time
+  description = each.value.description
+  services    = [pagerduty_service.this.id]
+}
+
+resource "pagerduty_slack_connection" "service_reference" {
+  count = var.create_slack_connection ? 1 : 0 && var.source_type == "service_reference"
+
+  source_id         = pagerduty_service.this
+  source_type       = var.source_type
+  workspace_id      = var.workspace_id
+  channel_id        = var.channel_id
+  notification_type = var.notification_type
+  config {
+    events     = var.events
+    priorities = [data.pagerduty_priority.p1.id]
+    urgency    = var.urgency
+  }
+}
+
+resource "pagerduty_slack_connection" "team_reference" {
+  count = var.create_slack_connection ? 1 : 0 && var.source_type == "team_reference"
+
+  source_id         = var.source_id
+  source_type       = var.source_type
+  workspace_id      = var.workspace_id
+  channel_id        = var.channel_id
+  notification_type = var.notification_type
+  config {
+    events     = var.events
+    priorities = [data.pagerduty_priority.p1.id]
+    urgency    = var.urgency
+  }
 }
