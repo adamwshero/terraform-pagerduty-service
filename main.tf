@@ -119,7 +119,7 @@ resource "pagerduty_maintenance_window" "this" {
 }
 
 resource "pagerduty_slack_connection" "service_reference" {
-  for_each = var.create_slack_connection ? [true] : [] && var.source_type ? ["service_reference"] : []
+  for_each = var.create_slack_connection ? [true] : [] && var.source_type == "service_reference" ? 1 : 0
 
   source_id         = pagerduty_service.this
   source_type       = var.source_type
@@ -134,7 +134,7 @@ resource "pagerduty_slack_connection" "service_reference" {
 }
 
 resource "pagerduty_slack_connection" "team_reference" {
-  for_each = var.create_slack_connection ? [true] : [] && var.source_type ? ["team_reference"] : []
+  for_each = var.create_slack_connection ? [true] : [] && var.source_type == "team_reference" ? 1 : 0
 
   source_id         = var.source_id
   source_type       = var.source_type
