@@ -119,7 +119,7 @@ resource "pagerduty_maintenance_window" "this" {
 }
 
 resource "pagerduty_slack_connection" "service_reference" {
-  count = var.source_type == "service_reference"
+  count = var.source_type == "service_reference" ? ["service_reference"] : []
 
   source_id         = pagerduty_service.this
   source_type       = var.source_type
@@ -134,7 +134,7 @@ resource "pagerduty_slack_connection" "service_reference" {
 }
 
 resource "pagerduty_slack_connection" "team_reference" {
-  count = var.source_type == "team_reference"
+  count = var.source_type == "team_reference" ? ["team_reference"] : []
 
   source_id         = var.source_id
   source_type       = var.source_type
