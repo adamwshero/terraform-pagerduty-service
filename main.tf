@@ -118,8 +118,8 @@ resource "pagerduty_maintenance_window" "this" {
   services    = [pagerduty_service.this.id]
 }
 
-resource "pagerduty_slack_connection" "service_reference" {
-  for_each = var.source_type == "service_reference" ? [source_id == pagerduty_service.this.id] : [var.source_id]
+resource "pagerduty_slack_connection" "this" {
+  for_each = var.source_type == "service_reference" ? [pagerduty_slack_connection.this.source_id == pagerduty_service.this.id] : [var.source_id]
 
   source_id         = var.source_id
   source_type       = var.source_type
