@@ -127,8 +127,8 @@ resource "pagerduty_slack_connection" "this" {
   channel_id        = each.channel_id
   notification_type = each.notification_type
   config {
-    events     = each.events
-    priorities = each.priorities
+    events     = var.events
+    priorities = var.priorities
     urgency    = var.urgency
   }
 }
