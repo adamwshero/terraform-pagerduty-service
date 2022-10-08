@@ -133,7 +133,7 @@ resource "pagerduty_slack_connection" "this" {
       notification_type = type.notification_type
       config            = type.config
     }
-    if var.source_type == "service_reference" ? [local.source_id] : [var.source_id]
+    if var.create_slack_connection ? [true] : []
   }
   source_id         = each.value.source_id
   source_type       = each.value.source_type
