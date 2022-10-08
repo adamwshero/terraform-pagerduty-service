@@ -220,11 +220,11 @@ variable "low_urgency" {
 #############################
 # PagerDuty Slack Connection
 #############################
-# variable "create_slack_connection" {
-#   description = "Decide to create the Slack connection or not."
-#   type        = bool
-#   default     = false
-# }
+variable "create_slack_connection" {
+  description = "Decide to create the Slack connection or not."
+  type        = bool
+  default     = false
+}
 
 variable "source_id" {
   description = "(Required) The ID of the source in PagerDuty. Valid `sources` are services or `teams`."
