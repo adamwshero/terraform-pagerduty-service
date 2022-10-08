@@ -126,22 +126,27 @@ resource "pagerduty_maintenance_window" "this" {
 resource "pagerduty_slack_connection" "this" {
   for_each = {
     for type in var.slack_connection : type.source_type => {
-			source_id         = type.source_id
-			source_type       = type.source_type
-			workspace_id      = type.workspace_id
-			channel_id        = type.channel_id
-			notification_type = type.notification_type
-			config = type.config
-		}
-		if var.source_type == "service_reference" ? [local.source_id] : [var.source_id]
-	}
+      source_id         = type.source_id
+      source_type       = type.source_type
+      workspace_id      = type.workspace_id
+      channel_id        = type.channel_id
+      notification_type = type.notification_type
+      config            = type.config
+    }
+    if var.source_type == "service_reference" ? [local.source_id] : [var.source_id]
+  }
+  source_id         = each.value.source_id
+  source_type       = each.value.source_type
+  workspace_id      = each.value.workspace_id
+  channel_id        = each.value.channel_id
+  notification_type = each.value.notification_type
   dynamic "config" {
-		for_each = each.value.config
-			content {
-				events     = config.value.target.events
-				priorities = config.value.target.priorities
-				urgency    = config.value.target.urgency
-			}
+    for_each = each.value.config
+    content {
+      events     = config.value.target.events
+      priorities = config.value.target.priorities
+      urgency    = config.value.target.urgency
+    }
   }
 }
 
