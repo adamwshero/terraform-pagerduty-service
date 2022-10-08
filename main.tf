@@ -143,9 +143,9 @@ resource "pagerduty_slack_connection" "this" {
   dynamic "config" {
     for_each = each.value.config
     content {
-      events     = config.value.target.events
-      priorities = config.value.target.priorities
-      urgency    = config.value.target.urgency
+      events     = config.value.events
+      priorities = config.value.priorities
+      urgency    = config.value.urgency
     }
   }
 }
