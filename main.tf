@@ -8,6 +8,7 @@ terraform {
 }
 provider "pagerduty" {
   token = var.token
+	user_token = var.token
 }
 
 data "pagerduty_escalation_policy" "this" {
@@ -133,17 +134,3 @@ resource "pagerduty_slack_connection" "this" {
   }
 }
 
-# resource "pagerduty_slack_connection" "team_reference" {
-#   count = var.source_type == "team_reference" ? var.source_id : []
-
-#   source_id         = var.source_id
-#   source_type       = var.source_type
-#   workspace_id      = var.workspace_id
-#   channel_id        = var.channel_id
-#   notification_type = var.notification_type
-#   config {
-#     events     = var.events
-#     priorities = var.priorities
-#     urgency    = var.urgency
-#   }
-# }
