@@ -124,7 +124,7 @@ resource "pagerduty_maintenance_window" "this" {
 }
 
 resource "pagerduty_slack_connection" "this" {
-  count = var.source_type == "service_reference" ? [local.source_id] : [var.source_id]
+  for_each = var.source_type == "service_reference" ? [local.source_id] : [var.source_id]
 
   source_id         = var.source_id
   source_type       = var.source_type
