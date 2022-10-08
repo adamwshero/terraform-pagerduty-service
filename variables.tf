@@ -231,6 +231,11 @@ variable "create_slack_connection" {
   default     = false
 }
 
+variable "slack_connection" {
+  description = "value"
+  type        = any
+}
+
 variable "source_id" {
   description = "(Required) The ID of the source in PagerDuty. Valid `sources` are services or `teams`."
   type        = string
