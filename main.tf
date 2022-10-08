@@ -7,8 +7,12 @@ terraform {
   }
 }
 provider "pagerduty" {
-  token = var.token
-	user_token = var.token
+  token      = var.token
+  user_token = var.user_token
+}
+
+locals {
+  source_id = pagerduty_slack_connection.this[0].source_id
 }
 
 data "pagerduty_escalation_policy" "this" {
@@ -120,7 +124,7 @@ resource "pagerduty_maintenance_window" "this" {
 }
 
 resource "pagerduty_slack_connection" "this" {
-  count = var.create_slack_connection ? 1 : 0
+  count = var.source_type == "service_reference" ? [local.source_id] : [var.source_id]
 
   source_id         = pagerduty_service.this.id
   source_type       = var.source_type
