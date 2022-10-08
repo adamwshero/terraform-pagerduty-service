@@ -12,7 +12,7 @@ provider "pagerduty" {
 }
 
 locals {
-  source_id = pagerduty_slack_connection.this[0].source_id
+  source_id = pagerduty_service.this.id
 }
 
 data "pagerduty_escalation_policy" "this" {
@@ -126,7 +126,7 @@ resource "pagerduty_maintenance_window" "this" {
 resource "pagerduty_slack_connection" "this" {
   count = var.source_type == "service_reference" ? [local.source_id] : [var.source_id]
 
-  source_id         = pagerduty_service.this.id
+  source_id         = var.source_id
   source_type       = var.source_type
   workspace_id      = var.workspace_id
   channel_id        = var.channel_id

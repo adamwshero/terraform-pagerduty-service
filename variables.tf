@@ -3,7 +3,7 @@
 ######################
 variable "token" {
   type        = string
-  description = "Pagerduty token"
+  description = "The account-level token needed to create PagerDuty Services."
 }
 
 variable "user_token" {
