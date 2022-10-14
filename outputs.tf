@@ -52,5 +52,5 @@ output "slack_connection_channel_name" {
 }
 output "maintenance_windows" {
   description = "Map of currently scheduled maintenance windows."
-  value       = var.enable_maintenance_windows ? var.maintenance_windows : "[INFO] No Maintenance Windows Scheduled."
+  value       = var.enable_maintenance_windows ? pagerduty_maintenance_window.this[*] : "[INFO] No Maintenance Windows Scheduled."
 }
