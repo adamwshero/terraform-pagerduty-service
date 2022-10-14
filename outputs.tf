@@ -30,17 +30,17 @@ output "sns_subscription_url" {
   description = "Subscription URL for SNS."
   value       = var.create_sns_topic ? aws_sns_topic_subscription.this[0].endpoint : "[INFO] SNS Topic Skipped."
 }
-output "slack_extension_id" {
-  description = "The Id of the Slack extension."
+output "extension_id" {
+  description = "The Id of the extension."
   value       = pagerduty_extension.this[*].id
 }
-output "slack_extension_url" {
+output "extension_url" {
   description = "URL at which the entity is uniquely displayed in the Web app."
   value       = pagerduty_extension.this[*].html_url
 }
 
-output "slack_connection" {
-  description = "List of VPC Link Ids that have been created."
+output "slack_connections" {
+  description = "Map of Slack connections."
   value = tomap({
     for k, slack_connection in pagerduty_slack_connection.this : k => {
       id           = slack_connection.id
@@ -50,8 +50,8 @@ output "slack_connection" {
   })
 }
 
-output "maintenance_windows" {
-  description = "List of VPC Link Ids that have been created."
+output "maintenance_windows_in_effect" {
+  description = "Map of maintenance windows scheduled."
   value = tomap({
     for k, windows in pagerduty_maintenance_window.this : k => {
       start_time  = windows.start_time
