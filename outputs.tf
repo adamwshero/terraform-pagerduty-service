@@ -38,19 +38,25 @@ output "slack_extension_url" {
   description = "URL at which the entity is uniquely displayed in the Web app."
   value       = pagerduty_extension.this[*].html_url
 }
-output "slack_connection_id" {
-  description = "The ID of the slack connection."
-  value       = var.create_slack_connection ? pagerduty_slack_connection.this[*].id : "[INFO] Slack Connection Skipped."
+
+output "slack_connection" {
+  description = "List of VPC Link Ids that have been created."
+  value = tomap({
+    for k, slack_connection in pagerduty_slack_connection.this : k => {
+      id           = slack_connection.id
+      source_type  = slack_connection.source_type
+      channel_name = slack_connection.channel_name
+    }
+  })
 }
-output "slack_connection_source_name" {
-  description = "Name of the source (team or service) in Slack connection."
-  value       = var.create_slack_connection ? pagerduty_slack_connection.this[*].source_name : "[INFO] Slack Connection Skipped."
-}
-output "slack_connection_channel_name" {
-  description = "Name of the Slack channel in Slack connection."
-  value       = var.create_slack_connection ? pagerduty_slack_connection.this[*].channel_name : "[INFO] Slack Connection Skipped."
-}
+
 output "maintenance_windows" {
-  description = "Map of currently scheduled maintenance windows."
-  value       = var.enable_maintenance_windows ? pagerduty_maintenance_window.this[*] : "[INFO] No Maintenance Windows Scheduled."
+  description = "List of VPC Link Ids that have been created."
+  value = tomap({
+    for k, windows in pagerduty_maintenance_window.this : k => {
+      start_time  = windows.start_time
+      end_time    = windows.end_time
+      description = windows.description
+    }
+  })
 }
