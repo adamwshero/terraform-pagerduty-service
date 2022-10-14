@@ -32,11 +32,11 @@ output "sns_subscription_url" {
 }
 output "extension_id" {
   description = "The Id of the extension."
-  value       = var.create_extension ? pagerduty_extension.this[*].id : "[INFO] PagerDuty Extension Skipped."
+  value       = var.create_extension ? pagerduty_extension.this[0].id : "[INFO] PagerDuty Extension Skipped."
 }
 output "extension_url" {
   description = "URL at which the entity is uniquely displayed in the Web app."
-  value       = var.create_extension ? pagerduty_extension.this[*].html_url : "[INFO] PagerDuty Extension Skipped."
+  value       = var.create_extension ? pagerduty_extension.this[0].html_url : "[INFO] PagerDuty Extension Skipped."
 }
 
 output "slack_connections" {
