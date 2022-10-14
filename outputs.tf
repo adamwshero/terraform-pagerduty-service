@@ -44,8 +44,10 @@ output "slack_connections" {
   value = tomap({
     for k, slack_connection in pagerduty_slack_connection.this : k => {
       id           = slack_connection.id
-      source_type  = slack_connection.source_type
+      channel_id   = slack_connection.channel_id
       channel_name = slack_connection.channel_name
+      source_type  = slack_connection.source_type
+      workspace_id = slack_connection.workspace_id
     }
   })
 }
