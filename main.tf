@@ -11,10 +11,10 @@ provider "pagerduty" {
   user_token = var.pagerduty_user_token
 }
 
-locals {
-  service_reference = "service_reference"
-  team_reference    = "team_reference"
-}
+# locals {
+#   service_reference = "service_reference"
+#   team_reference    = "team_reference"
+# }
 
 data "pagerduty_escalation_policy" "this" {
   name = var.escalation_policy
