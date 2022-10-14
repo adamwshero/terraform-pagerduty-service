@@ -136,7 +136,7 @@ resource "pagerduty_slack_connection" "this" {
     }
     if var.create_slack_connection == true
   }
-  source_id         = each.value.source_id
+  # source_id         = each.value.source_id
   source_type       = each.value.source_type
   workspace_id      = each.value.workspace_id
   channel_id        = each.value.channel_id
