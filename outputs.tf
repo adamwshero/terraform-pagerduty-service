@@ -40,15 +40,15 @@ output "slack_extension_url" {
 }
 output "slack_connection_id" {
   description = "The ID of the slack connection."
-  value       = var.create_slack_connection ? pagerduty_slack_connection.this[0].id : "[INFO] Slack Connection Skipped."
+  value       = var.create_slack_connection ? pagerduty_slack_connection.this[*].id : "[INFO] Slack Connection Skipped."
 }
 output "slack_connection_source_name" {
   description = "Name of the source (team or service) in Slack connection."
-  value       = var.create_slack_connection ? pagerduty_slack_connection.this[0].source_name : "[INFO] Slack Connection Skipped."
+  value       = var.create_slack_connection ? pagerduty_slack_connection.this[*].source_name : "[INFO] Slack Connection Skipped."
 }
 output "slack_connection_channel_name" {
   description = "Name of the Slack channel in Slack connection."
-  value       = var.create_slack_connection ? pagerduty_slack_connection.this[0].channel_name : "[INFO] Slack Connection Skipped."
+  value       = var.create_slack_connection ? pagerduty_slack_connection.this[*].channel_name : "[INFO] Slack Connection Skipped."
 }
 output "maintenance_windows" {
   description = "Map of currently scheduled maintenance windows."
