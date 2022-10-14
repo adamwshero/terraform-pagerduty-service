@@ -6,7 +6,7 @@ variable "token" {
   description = "The account-level token needed to create PagerDuty Services."
 }
 
-variable "user_token" {
+variable "pagerduty_user_token" {
   description = "User-level token needed to create Slack connections."
   type        = string
 }

@@ -8,7 +8,7 @@ terraform {
 }
 provider "pagerduty" {
   token      = var.token
-  user_token = var.user_token
+  user_token = var.pagerduty_user_token
 }
 
 locals {
