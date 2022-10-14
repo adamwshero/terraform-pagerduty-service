@@ -127,7 +127,7 @@ resource "pagerduty_maintenance_window" "this" {
 resource "pagerduty_slack_connection" "this" {
   for_each = {
     for type in var.slack_connection : type.source_type => {
-      source_id         = var.source_type != local.team_reference ? pagerduty_service.this.id : type.source_id
+      source_id         = type.source_type != local.team_reference ? pagerduty_service.this.id : type.source_id
       source_type       = type.source_type
       workspace_id      = type.workspace_id
       channel_id        = type.channel_id
