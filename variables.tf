@@ -117,7 +117,7 @@ variable "schema_name" {
 # PagerDuty Extension
 ######################
 variable "create_extension" {
-  description = "Decide to create the Slack integration or not."
+  description = "Decide to create a PagerDuty extension or not."
   type        = bool
   default     = false
 }

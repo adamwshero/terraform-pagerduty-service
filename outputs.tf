@@ -20,11 +20,11 @@ output "pagerduty_service_integration_key" {
 }
 output "sns_service_topic" {
   description = "The name of the SNS topic that you can send CloudWatch alarms to."
-  value       = aws_sns_topic.this[0].name
+  value       = var.create_sns_topic ? aws_sns_topic.this[0].name : "[INFO] SNS Topic Skipped."
 }
 output "sns_topic_arn" {
   description = "The Arn of the SNS topic that you can send CloudWatch alarms to."
-  value       = aws_sns_topic.this[0].arn
+  value       = var.create_sns_topic ? aws_sns_topic.this[0].arn : "[INFO] SNS Topic Skipped."
 }
 output "sns_subscription_url" {
   description = "Subscription URL for SNS."
@@ -32,11 +32,11 @@ output "sns_subscription_url" {
 }
 output "extension_id" {
   description = "The Id of the extension."
-  value       = pagerduty_extension.this[*].id
+  value       = var.create_extension ? pagerduty_extension.this[*].id : "[INFO] PagerDuty Extension Skipped."
 }
 output "extension_url" {
   description = "URL at which the entity is uniquely displayed in the Web app."
-  value       = pagerduty_extension.this[*].html_url
+  value       = var.create_extension ? pagerduty_extension.this[*].html_url : "[INFO] PagerDuty Extension Skipped."
 }
 
 output "slack_connections" {
