@@ -12,8 +12,8 @@ provider "pagerduty" {
 }
 
 locals {
-  service_reference = pagerduty_service.this.id
-  team_reference    = var.source_id
+  service_reference = "service_reference"
+  team_reference    = "team_reference"
 }
 
 data "pagerduty_escalation_policy" "this" {
@@ -127,7 +127,7 @@ resource "pagerduty_maintenance_window" "this" {
 resource "pagerduty_slack_connection" "this" {
   for_each = {
     for type in var.slack_connection : type.source_type => {
-      source_id         = var.source_type == local.service_reference ? var.source_id : pagerduty_service.this.id
+      source_id         = var.source_type != local.service_reference ? var.team_id : pagerduty_service.this.id
       source_type       = type.source_type
       workspace_id      = type.workspace_id
       channel_id        = type.channel_id
@@ -136,7 +136,7 @@ resource "pagerduty_slack_connection" "this" {
     }
     if var.create_slack_connection == true
   }
-  # source_id         = each.value.source_id
+  source_id         = each.value.source_id
   source_type       = each.value.source_type
   workspace_id      = each.value.workspace_id
   channel_id        = each.value.channel_id

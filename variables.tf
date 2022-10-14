@@ -235,7 +235,10 @@ variable "slack_connection" {
   description = "value"
   type        = any
 }
-
+variable "team_id" {
+  description = "Id of the team for use when Team Reference is selected."
+  type = string
+}
 variable "source_id" {
   description = "(Required) The ID of the source in PagerDuty. Valid sources are `service` or `team` ids."
   type        = string
