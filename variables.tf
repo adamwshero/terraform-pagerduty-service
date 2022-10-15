@@ -57,8 +57,9 @@ variable "scheduled_actions" {
   default = []
 }
 variable "auto_pause_notifications_parameters" {
-  type = any
-  default = []
+  description = "enabled (Optional) - Indicates whether alerts should be automatically suspended when identified as transient. If not passed in, will default to 'false'. timeout (Optional) - Indicates in seconds how long alerts should be suspended before triggering. Allowed values: 120, 180, 300, 600, 900 if enabled is true. Must be omitted or set to null if enabled is false."
+  type        = any
+  default     = []
 }
 
 #################################
