@@ -7,6 +7,7 @@ CHORE:
 * Added outputs for Slack Connections
 * Added outputs for Maintenance Windows
 * Improved examples
+
 ## 1.1.0 (September 27, 2022)
 
 CHORE:
