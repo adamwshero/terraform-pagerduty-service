@@ -1,7 +1,7 @@
 locals {
-  account     = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
-  region      = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
-  environment = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
+  account       = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
+  region        = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
+  environment   = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
   pagerduty_key = yamldecode("${get_terragrunt_dir()}/pagerduty-api-key.yaml")
 }
 
@@ -37,7 +37,7 @@ inputs = {
     }
   ]
 
-   // Incident Urgency Rules
+  // Incident Urgency Rules
   incident_urgency_rule = [{
     type    = "constant"
     urgency = "low"
@@ -50,6 +50,12 @@ inputs = {
       type    = "constant"
       urgency = "low"
     }]
+  }]
+
+  // Auto-Pause Notifications
+  auto_pause_notifications_parameters = [{
+    enabled = true
+    timeout = 300
   }]
 
   // Support Hours
@@ -70,28 +76,72 @@ inputs = {
   // SNS Topic
   create_sns_topic = true
   service_name     = "AcmeCorp-Elasticsearch"
-  
+
   // PagerDuty Extension
   create_extension = true
-  extension_name   = "DevOps: Slack"
-  schema_name      = "Generic V1 Webhook" // Can use "Slack V2" or some other compatible Generic webhook.
-  config = templatefile("${get_terragrunt_dir()}/slack/config.json.tpl", {
-    app_id             = "A1AAAAAAA"
-    authed_user        = "A11AAA11AAA"
-    bot_user_id        = "A111AAAA11A"
-    slack_team_id      = "AAAAAA11A"
-    slack_team_name    = "AcmeCorp"
-    slack_channel      = "#devops-pagerduty"
-    slack_channel_id   = "A11AA1AAA1A"
-    configuration_url  = "https://acme-corp.slack.com/services/A111AAAAAAAA"
-    referer            = "https://acmecorp.pagerduty.com/services/A1AAAA1/integrations?service_profile=1"
-    notify_resolve     = true
-    notify_trigger     = true
-    notify_escalate    = true
-    notify_acknowledge = true
-    notify_assignments = true
-    notify_annotate    = true
-    high_urgency       = true
-    low_urgency        = true
+  extension_name   = "My_V3_Extension"
+  schema_webhook   = "V3 Webhook"
+  config = templatefile("${get_terragrunt_dir()}/extensions/config.json.tpl", {
+    my_var1 = value1
+    my_var2 = value2
   })
+
+  // Slack Connection
+  create_slack_connection = true
+  pagerduty_user_token    = local.pagerduty_key.user_token
+  events                  = ["incident.triggered"]
+  slack_connections = [
+    {
+      source_type       = "service_reference"
+      workspace_id      = "A04AA6A27"
+      channel_id        = "A042A0AAAA2"
+      notification_type = "responder"
+      config = [{
+        priorities = ["*"]
+        urgency    = "low"
+        events = [
+          "incident.triggered",
+          "incident.acknowledged",
+          "incident.escalated",
+          "incident.resolved",
+          "incident.reassigned",
+          "incident.annotated",
+          "incident.unacknowledged",
+          "incident.delegated",
+          "incident.priority_updated",
+          "incident.responder.added",
+          "incident.responder.replied",
+          "incident.status_update_published",
+          "incident.reopened"
+        ]
+      }]
+    },
+    {
+      source_id         = "AA1A6AA"
+      source_type       = "team_reference"
+      workspace_id      = "A04AA6A27"
+      channel_id        = "A042A0AAAA2"
+      notification_type = "responder"
+      config = [{
+        priorities = ["*"]
+        urgency    = "low"
+        events = [
+          "incident.triggered",
+          "incident.acknowledged",
+          "incident.escalated",
+          "incident.resolved",
+          "incident.reassigned",
+          "incident.annotated",
+          "incident.unacknowledged",
+          "incident.delegated",
+          "incident.priority_updated",
+          "incident.responder.added",
+          "incident.responder.replied",
+          "incident.status_update_published",
+          "incident.reopened"
+        ]
+      }]
+    }
+  ]
+  tags = local.tags
 }

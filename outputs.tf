@@ -20,21 +20,45 @@ output "pagerduty_service_integration_key" {
 }
 output "sns_service_topic" {
   description = "The name of the SNS topic that you can send CloudWatch alarms to."
-  value       = aws_sns_topic.this[0].name
+  value       = var.create_sns_topic ? aws_sns_topic.this[0].name : "[INFO] SNS Topic Skipped."
 }
 output "sns_topic_arn" {
   description = "The Arn of the SNS topic that you can send CloudWatch alarms to."
-  value       = aws_sns_topic.this[0].arn
+  value       = var.create_sns_topic ? aws_sns_topic.this[0].arn : "[INFO] SNS Topic Skipped."
 }
 output "sns_subscription_url" {
   description = "Subscription URL for SNS."
-  value       = var.create_sns_topic ? aws_sns_topic_subscription.this[0].endpoint : "[INFO] SNS Topic Not Created."
+  value       = var.create_sns_topic ? aws_sns_topic_subscription.this[0].endpoint : "[INFO] SNS Topic Skipped."
 }
-output "slack_extension_id" {
-  description = "The Id of the Slack extension."
-  value       = pagerduty_extension.this[*].id
+output "extension_id" {
+  description = "The Id of the extension."
+  value       = var.create_extension ? pagerduty_extension.this[0].id : "[INFO] PagerDuty Extension Skipped."
 }
-output "slack_extension_url" {
+output "extension_url" {
   description = "URL at which the entity is uniquely displayed in the Web app."
-  value       = pagerduty_extension.this[*].html_url
+  value       = var.create_extension ? pagerduty_extension.this[0].html_url : "[INFO] PagerDuty Extension Skipped."
+}
+
+output "slack_connections" {
+  description = "Map of Slack connections."
+  value = tomap({
+    for k, slack_connection in pagerduty_slack_connection.this : k => {
+      id           = slack_connection.id
+      channel_id   = slack_connection.channel_id
+      channel_name = slack_connection.channel_name
+      source_type  = slack_connection.source_type
+      workspace_id = slack_connection.workspace_id
+    }
+  })
+}
+
+output "maintenance_windows_in_effect" {
+  description = "Map of maintenance windows scheduled."
+  value = tomap({
+    for k, windows in pagerduty_maintenance_window.this : k => {
+      start_time  = windows.start_time
+      end_time    = windows.end_time
+      description = windows.description
+    }
+  })
 }
