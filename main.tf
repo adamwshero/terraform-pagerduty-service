@@ -44,8 +44,8 @@ resource "pagerduty_service" "this" {
   dynamic "auto_pause_notifications_parameters" {
     for_each = var.auto_pause_notifications_parameters
     content {
-      enabled = each.value.enabled
-      timeout = each.value.timeout
+      enabled = auto_pause_notifications_parameters.value["enabled"]
+      timeout = auto_pause_notifications_parameters.value["timeout"]
     }
   }
   dynamic "support_hours" {
