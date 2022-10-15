@@ -41,6 +41,13 @@ resource "pagerduty_service" "this" {
       }
     }
   }
+  dynamic "auto_pause_notifications_parameters" {
+    for_each = var.auto_pause_notifications_parameters
+    content {
+      enabled = each.value.enabled
+      timeout = each.value.timeout
+    }
+  }
   dynamic "support_hours" {
     for_each = var.support_hours
     content {
