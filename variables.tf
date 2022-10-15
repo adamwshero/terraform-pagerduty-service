@@ -236,7 +236,7 @@ variable "create_slack_connection" {
   default     = false
 }
 
-variable "slack_connection" {
+variable "slack_connections" {
   description = "value"
   type        = any
 }

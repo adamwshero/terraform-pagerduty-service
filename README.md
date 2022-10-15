@@ -14,15 +14,17 @@
 <br>
 
 ## Module Capabilities
-- Create a Pagerduty Service
-- Supports many maintenance windows
-- Optional Incident Urgency Rule
-- Optional Scheduled Actions <span style="color:red">[Bug Reported!]</span>
+- Creates a Pagerduty Service
+- Creates 0, 1, or many maintenance windows
+- Creates 0, 1, or many Slack Connections (team and/or service)
 - Optional SNS Topic for integration notifications
-- Ability to Subscribe the Pagerduty service to an SNS topic (if enabled)
-- Manages extension configurations using the `templatefile()` Terraform function
-- Optional extension (Slack Example Provided)
-- Option to create a Service integration (e.g. CloudWatch, DataDog, etc.)
+- Automatically Subscribes the Pagerduty service to an SNS topic (if SNS is enabled)
+- Optional Service integration (e.g. CloudWatch, DataDog, etc.)
+- Optional Auto Pause Notifications
+- Optional extension
+- Optional Incident Urgency Rule
+- Optional Support Hours
+- Optional Scheduled Actions
 <br>
 
 ## Examples
@@ -30,28 +32,30 @@ Look at our complete [Terraform examples](latest/examples/terraform/) where you 
 <br>
 
 ## Assumptions
-  * You already have access to a PagerDuty API key to create the service.
+  * You already have access to a PagerDuty account-level API key to create the service.
+  * You already have access to a user-level API key to create Slack Connections.
   * You have access to Slack to acquire the team, bot, and other information need for the extension to work.
 <br>
 
 ## Usage
-You can create a PagerDuty service that comes with its own SNS topic and a subcription to that topic. The module also creates the CloudWatch integration for you as well as a Slack extension for notifications to blast to your channel of choice.
+You can create the most basic PagerDuty service or one that comes with its own SNS topic and a subcription to that topic. The module can also create the CloudWatch integration for you as well as an extension using your webhook of choice. It has the capability of creating many Slack Connections for teams or services, and many other optional configurations.
 <br>
 
 ## Open Issues
 * PagerDuty is currently aware that the Slack extension must be manually authorized in the PagerDuty Service page to connect to a given Slack channel once the service is created. There is no ETA on this fix
 * A scheduled_actions block is required when using type = `use_support_hours` in incident_urgency_rule. However, when this value is used, the urgency attribute must also be removed. Upon removing this attribute, we encounter an index error. This is on our list of fixes to make soon. As a workaround, you can still use `support_hours` and `incident_urgency_rule` using `constant`.
-
-
 <br>
 
 ## Special Notes
+* (Slack Connections)
+  * When using Slack Connections, it is important to understand that when `service_reference` is used for the `source_type` attribute, the `source_id` will automatically pick the id of `pagerduty_service.this`. If `team_reference` is used as the value for `source_type`, the value for `source_id` (Slack team id) must be provided by the user. This example is included for reference.
 * (Scheduled Actions)
   * A scheduled_actions block is required when using type = `use_support_hours` in incident_urgency_rule.
-
 * (Incident Urgency Rule)
   * When using type = `use_support_hours` in `incident_urgency_rule` you must specify exactly one (otherwise optional) `support_hours` block. Your PagerDuty account must have the `service_support_hours` ability to assign support hours. The block contains the following arguments:
   * Note that it is currently only possible to define the scheduled action when urgency is set to high for `during_support_hours` and to low for `outside_support_hours` in `incident_urgency_rule`.
+* Generic V1 Webook
+  * This webhook is no longer available after 10/31/2022. Users are encouraged to migrate to V3 webhooks.
 <br>
 
 ## Upcoming Improvements
@@ -64,7 +68,7 @@ You can create a PagerDuty service that comes with its own SNS topic and a subcr
 ### Terraform Basic Example
 ```
 module "pagerduty-service" {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.0"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
 
   // PagerDuty Service
   name              = "My Critical Service"
@@ -79,7 +83,7 @@ module "pagerduty-service" {
 ### Terragrunt Basic Example
 ```
 terraform {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.0"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
 }
 
 inputs = {
@@ -118,6 +122,7 @@ inputs = {
 | [pagerduty_extension.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/resources/extension)                           | resource |
 | [pagerduty_service_integration.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/data-sources/service_integration)    | resource |
 | [pagerduty_service_maintenance_window.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/resources/maintenance_window) | resource |
+| [pagerduty_slack_connection.rsm](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/resources/slack_connection)             | resource |
 | [aws_sns_topic.rsm](https://registry.terraform.io/providers/aaronfeng/aws/latest/docs/resources/sns_topic)                                       | resource |
 | [aws_sns_topic_subscription.rsm](https://registry.terraform.io/providers/aaronfeng/aws/latest/docs/resources/sns_topic_subscription)             | resource |
 
@@ -142,7 +147,8 @@ inputs = {
 | Incident Urgency Rule | pagerduty_service   | `incident_urgency_rule` | `any`         | `[]`                            | No        |
 | Support Hours         | pagerduty_service   | `support_hours`         | `set(object)` | `[]`                            | No        |
 | Scheduled Actions     | pagerduty_service   | `scheduled_actions`     | `any`         | `[]`                            | No        |
-| Vendor Name           | pagerduty_service_integration | `vendor_name` | `string`       | `null`                         | No        |
+| Autopause notifications| pagerduty_service  | `autopause_notifications_parameters` | `any` | `[]`                       | No        |
+| Vendor Name           | pagerduty_service_integration | `vendor_name` | `string`      | `null`                          | No        |
 | Prefix                | aws_sns_topic       | `prefix`                | `string`      | `null`                          | No        |
 | Name                  | aws_sns_topic       | `name`                  | `string`      | `null`                          | Yes       |
 | Schema Name           | pagerduty_extension_schema | `schema_name`    | `string`      | `null`                          | Yes       |
@@ -190,8 +196,10 @@ inputs = {
 | sns_service_topic                 | The name of the SNS topic that you can send CloudWatch alarms to. |
 | sns_topic_arn                     | The Arn of the SNS topic that you can send CloudWatch alarms to.  |
 | sns_subscription_url              | Subscription URL for SNS.                                         |
-| slack_extension_id                | The Id of the Slack extension.                                    |
-| slack_extension_url               | URL at which the entity is uniquely displayed in the Web app.     |
+| extension_id                      | The Id of the Slack extension.                                    |
+| extension_url                     | URL at which the entity is uniquely displayed in the Web app.     |
+| slack_connections                 | Map of Slack connections for teams or services.                   |
+| maintenance_windows_in_effect     | Map of maintenance windows that are in effect.                    |
 
 ## PagerDuty/Slack Extension Schema
  * https://developer.pagerduty.com/api-reference/YXBpOjExMjA5NTQ0-pager-duty-slack-integration-api (See /slack_schema.json)
