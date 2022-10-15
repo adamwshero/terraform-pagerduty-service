@@ -7,9 +7,9 @@ terraform {
   }
 }
 provider "pagerduty" {
-  token = var.token
+  token      = var.token
+  user_token = var.pagerduty_user_token
 }
-
 data "pagerduty_escalation_policy" "this" {
   name = var.escalation_policy
 }
@@ -22,7 +22,6 @@ resource "pagerduty_service" "this" {
   alert_creation          = var.alert_creation
   dynamic "incident_urgency_rule" {
     for_each = var.incident_urgency_rule
-    iterator = incident_urgency_rule
     content {
       type    = incident_urgency_rule.value["type"]
       urgency = incident_urgency_rule.value["urgency"]
@@ -40,6 +39,13 @@ resource "pagerduty_service" "this" {
           urgency = outside_support_hours.value["urgency"]
         }
       }
+    }
+  }
+  dynamic "auto_pause_notifications_parameters" {
+    for_each = var.auto_pause_notifications_parameters
+    content {
+      enabled = auto_pause_notifications_parameters.value["enabled"]
+      timeout = auto_pause_notifications_parameters.value["timeout"]
     }
   }
   dynamic "support_hours" {
@@ -74,7 +80,7 @@ data "pagerduty_vendor" "this" {
 resource "pagerduty_service_integration" "this" {
   count = var.enable_service_integration ? 1 : 0
 
-  name    = data.pagerduty_vendor.this.name  
+  name    = data.pagerduty_vendor.this.name
   vendor  = data.pagerduty_vendor.this.id
   service = pagerduty_service.this.id
   # type    = (do not use for Datadog or Cloudwatch "vendor" integrations..only for generic service integrations)
@@ -105,15 +111,43 @@ resource "pagerduty_extension" "this" {
   endpoint_url      = var.endpoint_url
   extension_schema  = data.pagerduty_extension_schema.this[count.index].id
   extension_objects = [pagerduty_service.this.id]
-  config = var.config
+  config            = var.config
 }
 
 resource "pagerduty_maintenance_window" "this" {
   for_each = {
-    for k,v in var.maintenance_windows : k => v if var.enable_maintenance_windows == true
+    for k, v in var.maintenance_windows : k => v if var.enable_maintenance_windows == true
   }
-    start_time  = each.value.start_time
-    end_time    = each.value.end_time
-    description = each.value.description
-    services    = [pagerduty_service.this.id]
+  start_time  = each.value.start_time
+  end_time    = each.value.end_time
+  description = each.value.description
+  services    = [pagerduty_service.this.id]
 }
+
+resource "pagerduty_slack_connection" "this" {
+  for_each = {
+    for type in var.slack_connection : type.source_type => {
+      source_id         = type.source_type == "service_reference" ? pagerduty_service.this.id : type.source_id
+      source_type       = type.source_type
+      workspace_id      = type.workspace_id
+      channel_id        = type.channel_id
+      notification_type = type.notification_type
+      config            = type.config
+    }
+    if var.create_slack_connection == true
+  }
+  source_id         = each.value.source_id
+  source_type       = each.value.source_type
+  workspace_id      = each.value.workspace_id
+  channel_id        = each.value.channel_id
+  notification_type = each.value.notification_type
+  dynamic "config" {
+    for_each = each.value.config
+    content {
+      events     = config.value.events
+      priorities = config.value.priorities
+      urgency    = config.value.urgency
+    }
+  }
+}
+

@@ -3,7 +3,12 @@
 ######################
 variable "token" {
   type        = string
-  description = "Pagerduty token"
+  description = "The account-level token needed to create PagerDuty Services."
+}
+
+variable "pagerduty_user_token" {
+  description = "User-level token needed to create Slack connections."
+  type        = string
 }
 
 #####################
@@ -51,6 +56,11 @@ variable "scheduled_actions" {
   type    = any
   default = []
 }
+variable "auto_pause_notifications_parameters" {
+  description = "enabled (Optional) - Indicates whether alerts should be automatically suspended when identified as transient. If not passed in, will default to 'false'. timeout (Optional) - Indicates in seconds how long alerts should be suspended before triggering. Allowed values: 120, 180, 300, 600, 900 if enabled is true. Must be omitted or set to null if enabled is false."
+  type        = any
+  default     = []
+}
 
 #################################
 # PagerDuty Service Integration
@@ -96,7 +106,7 @@ variable "enable_maintenance_windows" {
 variable "maintenance_windows" {
   description = "value"
   type        = any
-  default = []
+  default     = []
 }
 
 #############################
@@ -112,7 +122,7 @@ variable "schema_name" {
 # PagerDuty Extension
 ######################
 variable "create_extension" {
-  description = "Decide to create the Slack integration or not."
+  description = "Decide to create a PagerDuty extension or not."
   type        = bool
   default     = false
 }
@@ -215,4 +225,64 @@ variable "low_urgency" {
   type        = bool
   default     = "true"
   description = "(Required) Alerts Slack on low urgency incidents."
+}
+
+#############################
+# PagerDuty Slack Connection
+#############################
+variable "create_slack_connection" {
+  description = "Decide to create the Slack connection or not."
+  type        = bool
+  default     = false
+}
+
+variable "slack_connections" {
+  description = "value"
+  type        = any
+}
+variable "source_id" {
+  description = "(Required) The ID of the source in PagerDuty. Valid sources are `service` or `team` ids."
+  type        = string
+  default     = null
+}
+
+variable "source_type" {
+  description = "(Required) The type of the source. Either `team_reference` or `service_reference`."
+  type        = string
+  default     = null
+}
+
+variable "workspace_id" {
+  description = "(Required) The ID of the connected Slack workspace. Can also be defined by the `SLACK_CONNECTION_WORKSPACE_ID` environment variable."
+  type        = string
+  default     = null
+}
+
+variable "channel_id" {
+  description = "(Required) The ID of a Slack channel in the workspace."
+  type        = string
+  default     = null
+}
+
+variable "notification_type" {
+  description = "(Required) Type of notification. Either `responder` or `stakeholder`."
+  type        = string
+  default     = null
+}
+variable "events" {
+  description = "(Required) A list of strings to filter events by PagerDuty event type. `incident.triggered` is required. The follow event types are also possible:."
+  type        = any
+}
+
+variable "priorities" {
+  description = "(Optional) Allows you to filter events by priority. Needs to be an array of PagerDuty priority IDs. Available through pagerduty_priority data source. When omitted or set to an empty array (`[]`) in the configuration for a Slack Connection, its default behaviour is to set `priorities` to `No Priority` value. When set to `['*']` its corresponding value for `priorities` in Slack Connection's configuration will be `Any Priority`."
+  type        = list(string)
+  default     = []
+}
+
+variable "urgency" {
+  description = "(Optional) Allows you to filter events by urgency. Either high or low."
+  type        = string
+  default     = null
+
 }
