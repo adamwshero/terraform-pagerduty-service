@@ -10,12 +10,6 @@ provider "pagerduty" {
   token      = var.token
   user_token = var.pagerduty_user_token
 }
-
-# locals {
-#   service_reference = "service_reference"
-#   team_reference    = "team_reference"
-# }
-
 data "pagerduty_escalation_policy" "this" {
   name = var.escalation_policy
 }
@@ -28,7 +22,6 @@ resource "pagerduty_service" "this" {
   alert_creation          = var.alert_creation
   dynamic "incident_urgency_rule" {
     for_each = var.incident_urgency_rule
-    iterator = incident_urgency_rule
     content {
       type    = incident_urgency_rule.value["type"]
       urgency = incident_urgency_rule.value["urgency"]
