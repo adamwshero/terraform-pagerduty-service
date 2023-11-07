@@ -2,16 +2,17 @@ module "pagerduty-service" {
   source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.0"
 
   // PagerDuty Service
-  name              = "My Critical Service"
-  description       = "Service for all prod services."
-  escalation_policy = "My Escalation Policy Name"
-  alert_creation    = "create_alerts_and_incidents"
-  resolve_timeout   = 14400
-  ack_timeout       = 600
-  token             = local.token
-  user_token        = local.user_token
-  datadog_api_key   = local.datadog_api_key
-  datadog_app_key   = local.datadog_app_key
+  name                = "My Critical Service"
+  description         = "Service for all prod services."
+  escalation_policy   = "My Escalation Policy Name"
+  alert_creation      = "create_alerts_and_incidents"
+  resolve_timeout     = 14400
+  ack_timeout         = 600
+  token               = local.token
+  user_token          = local.user_token
+  datadog_integration = true
+  datadog_api_key     = local.datadog_api_key
+  datadog_app_key     = local.datadog_app_key
 
   alert_grouping_parameters = [{
     type   = "intelligent"

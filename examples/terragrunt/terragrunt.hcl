@@ -15,15 +15,16 @@ terraform {
 
 inputs = {
   // PagerDuty Service
-  name              = "DevOps: My-Critical-Service"
-  escalation_policy = "Escalation: DevOps Engineering"
-  resolve_timeout   = 14400
-  ack_timeout       = 600
-  alert_creation    = "create_alerts_and_incidents"
-  token             = local.token
-  user_token        = local.user_token
-  datadog_api_key   = local.datadog_api_key
-  datadog_app_key   = local.datadog_app_key
+  name                = "DevOps: My-Critical-Service"
+  escalation_policy   = "Escalation: DevOps Engineering"
+  resolve_timeout     = 14400
+  ack_timeout         = 600
+  alert_creation      = "create_alerts_and_incidents"
+  token               = local.token
+  user_token          = local.user_token
+  datadog_integration = true
+  datadog_api_key     = local.datadog_api_key
+  datadog_app_key     = local.datadog_app_key
 
   alert_grouping_parameters = [{
     type   = "intelligent"
