@@ -1,3 +1,8 @@
+## 2.0.1 (November 7, 2023)
+
+BUG:
+* Allow DataDog Integration To Be Optional
+
 ## 2.0.0 (November 7, 2023)
 
 BREAKING CHANGE:
