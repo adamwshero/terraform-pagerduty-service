@@ -1,7 +1,7 @@
-## Basic Terragrunt Example
+## Basic Terragrunt Example + Intelligent Grouping
 ```
 terraform {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=2.0.0"
 }
 
 inputs = {
@@ -13,12 +13,17 @@ inputs = {
   resolve_timeout   = 14400
   ack_timeout       = 600
   token             = local.pagerduty_key.key
+
+  alert_grouping_parameters = [{
+    type   = "intelligent"
+    config = {}
+  }]
 }
 ```
 ## Terragrunt Example w/CloudWatch & SNS Integration
 ```
 terraform {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=2.0.0"
 }
 
 inputs = {
@@ -44,7 +49,7 @@ inputs = {
 
 ```
 terraform {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=2.0.0"
 }
 
 inputs = {
@@ -97,7 +102,7 @@ inputs = {
 ## Terragrunt Example w/CloudWatch & SNS Integration + Incident Urgency Rules + Support Hours + Maintenance Windows
 ```
 terraform {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=2.0.0"
 }
 
 inputs = {
@@ -165,7 +170,7 @@ inputs = {
 ## Terragrunt Example w/CloudWatch & SNS Integration + Incident Urgency Rules + Support Hours + Maintenance Windows + Extension
 ```
 terraform {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=2.0.0"
 }
 
 inputs = {
@@ -242,7 +247,7 @@ inputs = {
 ## Terragrunt Example w/CloudWatch & SNS Integration + Incident Urgency Rules + Support Hours + Maintenance Windows + Extension + Slack Connections
 ```
 terraform {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=2.0.0"
 }
 
 inputs = {

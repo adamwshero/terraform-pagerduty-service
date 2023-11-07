@@ -1,7 +1,7 @@
-## Basic Terraform Example
+## Basic Terraform Example + Intelligent Grouping
 ```
 module "pagerduty-service" {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=2.0.0"
 
   // PagerDuty Service
   name              = "My Critical Service"
@@ -11,11 +11,17 @@ module "pagerduty-service" {
   resolve_timeout   = 14400
   ack_timeout       = 600
   token             = file("${path.module}/my_pagerduty_api_key.yaml")
+
+  alert_grouping_parameters = [{
+    type   = "intelligent"
+    config = {}
+  }]
+}
 ```
 ## Terraform Example w/CloudWatch & SNS Integration
 ```
 module "pagerduty-service" {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=2.0.0"
 
   // PagerDuty Service
   name              = "My Critical Service"
@@ -38,7 +44,7 @@ module "pagerduty-service" {
 
 ```
 module "pagerduty-service" {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=2.0.0"
 
   // PagerDuty Service
   name              = "My Critical Service"
@@ -89,7 +95,7 @@ module "pagerduty-service" {
 ## Terraform Example w/CloudWatch & SNS Integration + Incident Urgency Rules + Support Hours + Maintenance Windows
 ```
 module "pagerduty-service" {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=2.0.0"
 
   // PagerDuty Service
   name              = "My Critical Service"
@@ -155,7 +161,7 @@ module "pagerduty-service" {
 ## Terraform Example w/CloudWatch & SNS Integration + Incident Urgency Rules + Support Hours + Maintenance Windows + Extension
 ```
 module "pagerduty-service" {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=2.0.0"
 
   // PagerDuty Service
   name              = "My Critical Service"
@@ -230,7 +236,7 @@ module "pagerduty-service" {
 ## Terraform Example w/CloudWatch & SNS Integration + Incident Urgency Rules + Support Hours + Maintenance Windows + Extension + Slack Connections
 ```
 module "pagerduty-service" {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=2.0.0"
 
   // PagerDuty Service
   name              = "My Critical Service"

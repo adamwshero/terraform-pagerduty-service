@@ -68,7 +68,7 @@ You can create the most basic PagerDuty service or one that comes with its own S
 ### Terraform Basic Example
 ```
 module "pagerduty-service" {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=2.0.0"
 
   // PagerDuty Service
   name              = "My Critical Service"
@@ -78,12 +78,18 @@ module "pagerduty-service" {
   resolve_timeout   = 14400
   ack_timeout       = 600
   token             = file("${path.module}/my_pagerduty_api_key.yaml")
+
+  alert_grouping_parameters = [{
+    type   = "intelligent"
+    config = {}
+  }]
+}
 ```
 
 ### Terragrunt Basic Example
 ```
 terraform {
-  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=1.1.1"
+  source = "git@github.com:adamwshero/terraform-pagerduty-service.git//.?ref=2.0.0"
 }
 
 inputs = {
@@ -95,6 +101,11 @@ inputs = {
   resolve_timeout   = 14400
   ack_timeout       = 600
   token             = local.pagerduty_key.key
+
+  alert_grouping_parameters = [{
+    type   = "intelligent"
+    config = {}
+  }]
 }
 ```
 
@@ -104,15 +115,15 @@ inputs = {
 | Name | Version |
 |------|---------|
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 2.67.0 |
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14.0 
-| <a name="requirement_terragrunt"></a> [terragrunt](#requirement\_terragrunt) | >= 0.28.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 
+| <a name="requirement_terragrunt"></a> [terragrunt](#requirement\_terragrunt) | >= 0.48.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 2.67.0 |
-| <a name="provider_pagerduty"></a> [pagerduty](#provider\_pagerduty) | >= 1.9.6 |
+| <a name="provider_pagerduty"></a> [pagerduty](#provider\_pagerduty) | >= 3.1.1 |
 
 ## Resources
 
@@ -174,6 +185,12 @@ inputs = {
 | Alert on High Urgency | pagerduty_extension | `high_urgency`          | `bool`        | `"true"`                        | No        |
 | Alert on High Urgency | pagerduty_extension | `low_urgency`           | `bool`        | `"true"`                        | No        |
 | Maintenance Windows   | pagerduty_maintenance_window | `maintenance_windows` | `any`  | `[]`                            | No        |
+| DataDog API Key       | pagerduty_service_integration | `datadog_api_key` | `string`  | `null`                          | No        |
+| DataDog APP Key       | pagerduty_service_integration | `datadog_app_key` | `string`  | `null`                          | No        |
+
+
+
+
 
 ## Predetermined Inputs
 

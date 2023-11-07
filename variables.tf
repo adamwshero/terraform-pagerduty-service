@@ -19,43 +19,57 @@ variable "escalation_policy" {
   default     = null
   description = "(Required) The escalation policy used by this service."
 }
+
 variable "name" {
   type        = string
   default     = null
   description = "(Required) The name of the service."
 }
+
 variable "description" {
   type        = string
   default     = null
   description = "(Optional) A human-friendly description of the service. If not set, a placeholder of `Managed by Terraform` will be set."
 }
+
 variable "resolve_timeout" {
   type        = number
   default     = 14400
   description = "(Optional) Time in seconds that an incident is automatically resolved if left open for that long. Disabled if set to the `null` string."
 }
+
 variable "ack_timeout" {
   type        = number
   default     = 600
   description = "(Optional) Time in seconds that an incident changes to the Triggered State after being Acknowledged. Disabled if set to the `null` string. If not passed in, will default to `1800`."
 }
+
 variable "alert_creation" {
   type        = string
   default     = "create_alerts_and_incidents"
   description = "(Optional) Must be one of two values. PagerDuty receives events from your monitoring systems and can then create incidents in different ways. Value `create_incidents` is default: events will create an incident that cannot be merged. Value `create_alerts_and_incidents` is the alternative: events will create an alert and then add it to a new incident, these incidents can be merged. This option is recommended."
 }
+
+variable "alert_grouping_parameters" {
+  type    = any
+  default = []
+}
+
 variable "incident_urgency_rule" {
   type    = any
   default = []
 }
+
 variable "support_hours" {
   type    = any
   default = []
 }
+
 variable "scheduled_actions" {
   type    = any
   default = []
 }
+
 variable "auto_pause_notifications_parameters" {
   description = "enabled (Optional) - Indicates whether alerts should be automatically suspended when identified as transient. If not passed in, will default to 'false'. timeout (Optional) - Indicates in seconds how long alerts should be suspended before triggering. Allowed values: 120, 180, 300, 600, 900 if enabled is true. Must be omitted or set to null if enabled is false."
   type        = any
@@ -70,11 +84,13 @@ variable "enable_service_integration" {
   type        = bool
   default     = false
 }
+
 variable "vendor_name" {
   description = "(Required) The vendor name to use to find a vendor in the PagerDuty API."
   type        = string
   default     = null
 }
+
 variable "type" {
   type        = string
   default     = "aws_cloudwatch_inbound_integration"
@@ -89,6 +105,7 @@ variable "create_sns_topic" {
   type        = bool
   default     = false
 }
+
 variable "service_name" {
   type        = string
   default     = null
@@ -103,6 +120,7 @@ variable "enable_maintenance_windows" {
   type        = bool
   default     = false
 }
+
 variable "maintenance_windows" {
   description = "value"
   type        = any
@@ -126,105 +144,35 @@ variable "create_extension" {
   type        = bool
   default     = false
 }
+
 variable "extension_name" {
   description = "(Optional) The name of the service extension."
   type        = string
   default     = null
 }
-variable "config" {
-  description = "(Optional) The configuration of the service extension as string containing plain JSON-encoded data."
+
+variable "extension_schema" {
+  description = "(Required) This is the schema for this extension."
   type        = string
   default     = null
 }
-variable "app_id" {
-  type        = string
-  default     = null
-  description = "(Required) Id of the PagerDuty Slack app. (e.g. A1KKEUENN)"
+
+variable "extension_objects" {
+  description = "(Required) This is the objects for which the extension applies (An array of service ids)."
+  type        = any
+  default     = []
 }
-variable "authed_user" {
-  type        = string
-  default     = null
-  description = "Id of the auth user. This can be empty probably since auto authorizations for Slack are not working. (e.g. A11OKE11NNY)"
-}
-variable "bot_user_id" {
-  type        = string
-  default     = null
-  description = "(Required) Id of the bot user from Slack. (e.g. A11OKE11NNY)"
-}
-variable "slack_channel" {
-  type        = string
-  default     = null
-  description = "(Required) The name of the Slack channel (e.g. #devops-pagerduty)."
-}
-variable "slack_channel_id" {
-  type        = string
-  default     = null
-  description = "(Required) The name of the Slack channel Id (e.g. ABC123XYZ456)."
-}
-variable "configuration_url" {
-  type        = string
-  default     = null
-  description = "(Required) The URL of your slack space. (e.g. https://acme-corp.slack.com/services/A111AAAAAAAA)"
-}
+
 variable "endpoint_url" {
   type        = string
   default     = null
   description = "(Required|Optional) The url of the extension. Note: The endpoint URL is Optional API wise in most cases. But in some cases it is a Required parameter. For example, pagerduty_extension_schema named Generic V2 Webhook doesn't accept pagerduty_extension with no endpoint_url, but one with named Slack accepts. (e.g. https://hooks.slack.com/services/A1AAAA11A/A11AAAAAAAA/AaAAaAaAAaaAaAAaaAAAA1AA)"
 }
-variable "notify_resolve" {
-  type        = bool
-  default     = "true"
-  description = "(Required) Tells PagerDuty to notify Slack when status = resolved."
-}
-variable "notify_trigger" {
-  type        = bool
-  default     = "true"
-  description = "(Required) Tells PagerDuty to notify Slack when a trigger occurs."
-}
-variable "notify_escalate" {
-  type        = bool
-  default     = "true"
-  description = "(Required) Tells PagerDuty to notify Slack when an incident is escalated."
-}
-variable "notify_acknowledge" {
-  type        = bool
-  default     = "true"
-  description = "(Required) Tells PagerDuty to notify Slack when an incident is acknowledged."
-}
-variable "notify_assignments" {
-  type        = bool
-  default     = "true"
-  description = "(Required) Tells PagerDuty to notify Slack when an incident is assigned."
-}
-variable "notify_annotate" {
-  type        = bool
-  default     = "true"
-  description = "(Required) Tells PagerDuty to notify Slack when an incident has been updated."
-}
-variable "referer" {
+
+variable "config" {
+  description = "(Optional) The configuration of the service extension as string containing plain JSON-encoded data."
   type        = string
   default     = null
-  description = "(Required) URL of the PagerDuty Slack integration. (e.g. https://acmecorp.pagerduty.com/services/A1AAAA1/integrations?service_profile=1)"
-}
-variable "slack_team_id" {
-  type        = string
-  default     = null
-  description = "(Required) The Slack team Id (e.g. AB456XYZ)."
-}
-variable "slack_team_name" {
-  type        = string
-  default     = null
-  description = "(Required) The Slack team name (e.g. ACMECORP)."
-}
-variable "high_urgency" {
-  type        = bool
-  default     = "true"
-  description = "(Required) Alerts Slack on high urgency incidents."
-}
-variable "low_urgency" {
-  type        = bool
-  default     = "true"
-  description = "(Required) Alerts Slack on low urgency incidents."
 }
 
 #############################
@@ -284,5 +232,18 @@ variable "urgency" {
   description = "(Optional) Allows you to filter events by urgency. Either high or low."
   type        = string
   default     = null
-
 }
+
+##############################
+# DataDog API Integration
+##############################
+variable "datadog_api_key" {
+  description = "Datadog API key. This can also be set via the DD_API_KEY environment variable"
+  type        = string
+}
+
+variable "datadog_app_key" {
+  description = "Datadog APP key. This can also be set via the DD_APP_KEY environment variable."
+  type        = string
+}
+

@@ -1,4 +1,16 @@
-## 1.1.1 (October 14, 2022)
+## 2.0.0 (November 7, 2023)
+
+BREAKING CHANGE:
+* Pinned pagerduty provider to 3.1.1
+
+FEATURE:
+* Added support for intelligent grouping (dynamic block)
+* Added support for DataDog integration
+
+CHORE:
+* Improved examples
+
+## 2.0.0 (October 14, 2022)
 
 FEATURE:
 * Supports Slack Connections (teams or services)
