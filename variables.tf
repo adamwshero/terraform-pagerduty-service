@@ -237,6 +237,12 @@ variable "urgency" {
 ##############################
 # DataDog API Integration
 ##############################
+variable "datadog_integration" {
+  description = "Uses DataDog API Keys and createst the integration."
+  type        = bool
+  default     = false
+}
+
 variable "datadog_api_key" {
   description = "Datadog API key. This can also be set via the DD_API_KEY environment variable"
   type        = string

@@ -166,13 +166,13 @@ resource "pagerduty_slack_connection" "this" {
 }
 
 data "pagerduty_vendor" "datadog" {
-  count = var.enable_datadog_integration ? 1 : 0
+  count = var.datadog_integration ? 1 : 0
 
   name = "Datadog"
 }
 
 resource "pagerduty_service_integration" "datadog" {
-  count = var.enable_datadog_integration ? 1 : 0
+  count = var.datadog_integration ? 1 : 0
 
   name    = data.pagerduty_vendor.datadog.name
   service = pagerduty_service.this.id
