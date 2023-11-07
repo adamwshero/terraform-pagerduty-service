@@ -20,7 +20,15 @@ inputs = {
   resolve_timeout   = 14400
   ack_timeout       = 600
   alert_creation    = "create_alerts_and_incidents"
-  token             = local.pagerduty_key.key
+  token             = local.token
+  user_token        = local.user_token
+  datadog_api_key   = local.datadog_api_key
+  datadog_app_key   = local.datadog_app_key
+
+  alert_grouping_parameters = [{
+    type   = "intelligent"
+    config = {}
+  }]
 
   // Maintenance Windows
   enable_maintenance_windows = true

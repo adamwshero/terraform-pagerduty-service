@@ -2,7 +2,7 @@ terraform {
   required_providers {
     pagerduty = {
       source  = "PagerDuty/pagerduty"
-      version = "2.6.2"
+      version = "3.1.1"
     }
   }
 }
@@ -37,6 +37,20 @@ resource "pagerduty_service" "this" {
         content {
           type    = outside_support_hours.value["type"]
           urgency = outside_support_hours.value["urgency"]
+        }
+      }
+    }
+  }
+  dynamic "alert_grouping_parameters" {
+    for_each = var.alert_grouping_parameters
+    content {
+      type = alert_grouping_parameters.value["type"]
+      dynamic "config" {
+        for_each = alert_grouping_parameters.value.config
+        content {
+          timeout   = each.value.timeout
+          aggregate = each.value.aggregate
+          fields    = each.value.fields
         }
       }
     }
@@ -151,3 +165,12 @@ resource "pagerduty_slack_connection" "this" {
   }
 }
 
+data "pagerduty_vendor" "datadog" {
+  name = "Datadog"
+}
+
+resource "pagerduty_service_integration" "datadog" {
+  name    = data.pagerduty_vendor.datadog.name
+  service = pagerduty_service.this.id
+  vendor  = data.pagerduty_vendor.datadog.id
+}

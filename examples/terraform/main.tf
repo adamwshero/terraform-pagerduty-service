@@ -8,7 +8,15 @@ module "pagerduty-service" {
   alert_creation    = "create_alerts_and_incidents"
   resolve_timeout   = 14400
   ack_timeout       = 600
-  token             = file("${path.module}/my_pagerduty_api_key.yaml")
+  token             = local.token
+  user_token        = local.user_token
+  datadog_api_key   = local.datadog_api_key
+  datadog_app_key   = local.datadog_app_key
+
+  alert_grouping_parameters = [{
+    type   = "intelligent"
+    config = {}
+  }]
 
   // Maintenance Windows
   enable_maintenance_windows = true
