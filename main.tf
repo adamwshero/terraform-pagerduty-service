@@ -174,7 +174,7 @@ data "pagerduty_vendor" "datadog" {
 resource "pagerduty_service_integration" "datadog" {
   count = var.datadog_integration ? 1 : 0
 
-  name    = data.pagerduty_vendor.datadog.name
+  name    = data.pagerduty_vendor.datadog[0].name
   service = pagerduty_service.this.id
-  vendor  = data.pagerduty_vendor.datadog.id
+  vendor  = data.pagerduty_vendor.datadog[0].id
 }
